@@ -36,8 +36,8 @@ export function CategoryMegaMenu({
                 </Link>
                 <p className="mt-3 font-[var(--font-display)] text-2xl">{group.spotlight}</p>
                 <div className="mt-4 grid gap-2 text-sm text-[var(--muted)]">
-                  {group.links.map((link) => (
-                    <Link key={link} href={`/products?category=${group.slug}&search=${encodeURIComponent(link)}`}>
+                  {group.links.map((link, linkIndex) => (
+                    <Link key={`${group.slug}-${linkIndex}`} href={`/products?category=${group.slug}&search=${encodeURIComponent(link)}`}>
                       {link}
                     </Link>
                   ))}

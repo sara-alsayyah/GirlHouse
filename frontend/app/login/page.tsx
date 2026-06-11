@@ -107,7 +107,7 @@ export default function LoginPage() {
         </p>
 
         <h1 className="section-heading mt-4 text-5xl">
-         Welcome back to  <span className= "text-[var(--gold-deep)]">GOLDORA</span>
+         Welcome back to  <span className= "text-[var(--gold-deep)]">GIRL HOUSE</span>
         </h1>
 
         <div className="mt-8 space-y-4">

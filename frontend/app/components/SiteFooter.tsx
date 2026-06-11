@@ -1,73 +1,157 @@
 import Link from "next/link";
-import { commerceCategories } from "@/app/lib/categories";
 import { BRAND_NAME } from "@/app/lib/brand";
 import { BrandLogo } from "@/app/components/BrandLogo";
+import {
+  TruckIcon,
+  ShieldCheckIcon,
+  ArrowUturnLeftIcon,
+  StarIcon,
+} from "@heroicons/react/24/outline";
+const trustItems = [
+  { icon: TruckIcon, title: "شحن سريع", sub: "لكافة المناطق" },
+  { icon: ShieldCheckIcon, title: "دفع آمن", sub: "طرق دفع متعددة وآمنة" },
+  { icon: ArrowUturnLeftIcon, title: "إرجاع سهل", sub: "سياسة إرجاع مرنة" },
+  { icon: StarIcon, title: "جودة عالية", sub: "خامات مختارة بعناية" },
+];
 
 export function SiteFooter() {
   return (
-    <footer className="mx-auto mt-16 max-w-7xl px-4 pb-28 sm:px-6 lg:px-10 lg:pb-12">
-      <div className="luxury-card overflow-hidden rounded-[36px] px-6 py-8 sm:px-10">
-        <div className="grid gap-8 lg:grid-cols-[1.15fr,0.85fr,0.85fr,0.95fr]">
-          <div>
-            <BrandLogo />
-            <p className="mt-5 max-w-md text-sm leading-7 text-[var(--muted)]">
-              {BRAND_NAME} is designed as a refined everything-store: fashion, beauty, accessories, and home pieces in one polished shopping experience.
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[20px] border border-[rgba(143,108,29,0.14)] bg-white/66 px-4 py-3">
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">Delivery</p>
-                <p className="mt-1 text-sm">3-6 day dispatch</p>
-              </div>
-              <div className="rounded-[20px] border border-[rgba(143,108,29,0.14)] bg-white/66 px-4 py-3">
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">Support</p>
-                <p className="mt-1 text-sm">Daily customer care</p>
-              </div>
-              <div className="rounded-[20px] border border-[rgba(143,108,29,0.14)] bg-white/66 px-4 py-3">
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">Checkout</p>
-                <p className="mt-1 text-sm">Protected payment flow</p>
+<footer className="mt-24">
+  {/* Trust badges bar */}
+  <div className="bg-[#f9f0f2] border-t border-[rgba(183,136,149,0.15)]">
+    <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+
+        {trustItems.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <div
+              key={item.title}
+              className="flex flex-col items-center gap-2 text-center"
+            >
+              <Icon className="h-6 w-6 text-[#b78895]" />
+
+              <p className="text-sm font-medium text-[#5a3a42]">
+                {item.title}
+              </p>
+
+              <p className="text-xs text-[#9a7a82]">
+                {item.sub}
+              </p>
+            </div>
+          );
+        })}
+
+      </div>
+    </div>
+  </div>
+
+      {/* Main footer */}
+      <div className="relative bg-[#6f4650] text-white overflow-hidden">
+         <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_top,#f3c85f,transparent_60%)]" />
+
+  <div className="relative mx-auto max-w-7xl px-6 py-20">
+
+    <div className="grid gap-14 md:grid-cols-4">
+
+            {/* Col 1 — Brand */}
+            <div>
+              <BrandLogo />
+              <p className="mt-6 text-sm leading-7 text-white/70">
+                علامة تجارية متخصصة في الأزياء المحتشمة والأنيقة لكل امرأة راقية
+              </p>
+              {/* Social icons */}
+              <div className="mt-6 flex gap-3">
+                {[
+                  { label: "Instagram", path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" },
+                  { label: "TikTok", path: "M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.2 8.2 0 004.79 1.53V6.75a4.85 4.85 0 01-1.02-.06z" },
+                  { label: "WhatsApp", path: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" },
+                ].map((social) => (
+                  <a
+                    key={social.label}
+                    href="#"
+                    aria-label={social.label}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-white">
+                      <path d={social.path} />
+                    </svg>
+                  </a>
+                ))}
               </div>
             </div>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">Explore</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {commerceCategories.slice(0, 8).map((category) => (
-                <Link
-                  key={category.slug}
-                  href={`/products?category=${category.slug}`}
-                  className="rounded-full border border-[rgba(143,108,29,0.14)] bg-white/70 px-3 py-2 text-xs text-[var(--muted)]"
+
+            {/* Col 2 — Quick Links */}
+            <div dir="rtl">
+              <h3 className="mb-5 text-sm font-medium uppercase tracking-[0.25em] text-white/50">
+                روابط سريعة
+              </h3>
+              <div className="space-y-3 text-sm text-white/80">
+                {[
+                  { href: "/", label: "الرئيسية" },
+                  { href: "/products", label: "المجموعات" },
+                  { href: "/products?category=women", label: "وصل حديثاً" },
+                  { href: "/products", label: "الأكثر مبيعاً" },
+                  { href: "/about", label: "من نحن" },
+                ].map((link) => (
+                  <Link key={link.href + link.label} href={link.href} className="block hover:text-[#f3c85f] transition">
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Col 3 — Customer Service */}
+            <div dir="rtl">
+              <h3 className="mb-5 text-sm font-medium uppercase tracking-[0.25em] text-white/50">
+                خدمة العملاء
+              </h3>
+              <div className="space-y-3 text-sm text-white/80">
+                {[
+                  { href: "/account/orders", label: "تتبع الطلب" },
+                  { href: "/contact", label: "الأسئلة الشائعة" },
+                  { href: "/shipping", label: "سياسة الشحن" },
+                  { href: "/returns", label: "سياسة الإرجاع" },
+                  { href: "/contact", label: "تواصل معنا" },
+                ].map((link) => (
+                  <Link key={link.label} href={link.href} className="block hover:text-[#f3c85f] transition">
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Col 4 — Newsletter */}
+            <div dir="rtl">
+              <h3 className="mb-5 text-sm font-medium uppercase tracking-[0.25em] text-white/50">
+                اشترك في نشرتنا البريدية
+              </h3>
+              <p className="mb-4 text-sm text-white/70">
+                لتكوني أول من يعلم بالمنتجات الجديدة والعروض الحصرية
+              </p>
+              <div className="flex overflow-hidden rounded-full bg-white/10 border border-white/20">
+                <input
+                  type="email"
+                  placeholder="بريدك الإلكتروني"
+                  dir="rtl"
+                  className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none"
+                />
+                <button
+                  className="px-5 py-3 text-sm font-medium text-white shrink-0 transition hover:opacity-90"
+                  style={{ background: "linear-gradient(135deg, #f3c85f, #d4a63f)" }}
                 >
-                  {category.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">Quick links</p>
-            <div className="mt-4 grid gap-3 text-sm text-[var(--muted)]">
-              <Link href="/products">All products</Link>
-              <Link href="/wishlist">Wishlist</Link>
-              <Link href="/account">My account</Link>
-              <Link href="/checkout">Checkout</Link>
-              <Link href="/contact">Contact</Link>
-            </div>
-          </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">Customer care</p>
-            <div className="mt-4 space-y-4">
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/68 p-4">
-                <p className="text-sm font-medium">Need style help?</p>
-                <p className="mt-1 text-sm text-[var(--muted)]">Visit notifications, wishlist, and account to continue where you left off.</p>
+                  اشتركي الآن
+                </button>
               </div>
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-[linear-gradient(135deg,#fffdf4,#f0dfb8)] p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--gold-deep)]">Boutique access</p>
-                <p className="mt-2 text-sm text-[var(--muted)]">Track orders, manage addresses, and shop new curated arrivals from one account space.</p>
-              </div>
+
+              {/* App download hint or tagline */}
+              <p className="mt-6 text-xs text-white/40 leading-relaxed">
+                © {new Date().getFullYear()} Girl House Shop. جميع الحقوق محفوظة.
+              </p>
             </div>
+
           </div>
-        </div>
-        <div className="mt-8 border-t border-[rgba(143,108,29,0.12)] pt-5 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
-          {new Date().getFullYear()} {BRAND_NAME}. Full-stack e-commerce platform project.
         </div>
       </div>
     </footer>

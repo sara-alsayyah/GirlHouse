@@ -62,9 +62,9 @@ type StoreContextValue = {
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
-const SAVED_FOR_LATER_KEY = "goldora-saved-later";
-const RECENTLY_VIEWED_KEY = "goldora-recently-viewed";
-const THEME_MODE_KEY = "goldora-theme-mode";
+const SAVED_FOR_LATER_KEY = "girlhouse-saved-later";
+const RECENTLY_VIEWED_KEY = "girlhouse-recently-viewed";
+const THEME_MODE_KEY = "girlhouse-theme-mode";
 
 type ApiError = {
   detail?: string;

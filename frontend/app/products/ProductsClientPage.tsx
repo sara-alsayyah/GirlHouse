@@ -116,8 +116,8 @@ export function ProductsClientPage({
               className="w-full rounded-[18px] border px-4 py-3"
             >
               <option value="">All categories</option>
-              {commerceCategories.map((c) => (
-                <option key={c.slug} value={c.slug}>
+              {commerceCategories.map((c, index) => (
+                <option key={`${c.slug}-${index}`} value={c.slug}>
                   {c.name}
                 </option>
               ))}
@@ -239,8 +239,8 @@ export function ProductsClientPage({
                 className="w-full rounded-[16px] border px-4 py-3"
               >
                 <option value="">All categories</option>
-                {commerceCategories.map((c) => (
-                  <option key={c.slug} value={c.slug}>
+                {commerceCategories.map((c, index) => (
+                  <option key={`${c.slug}-${index}`} value={c.slug}>
                     {c.name}
                   </option>
                 ))}

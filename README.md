@@ -1,6 +1,6 @@
-# GOLDORA
+# GIRL HOUSE
 
-GOLDORA is a full-stack luxury e-commerce project built with a Django REST backend and a Next.js frontend. It includes product browsing, wishlist and cart flows, checkout, account pages, notifications, contact handling, and an elevated storefront UI with responsive navigation and boutique-style presentation.
+GIRL HOUSE is a full-stack luxury e-commerce project built with a Django REST backend and a Next.js frontend. It includes product browsing, wishlist and cart flows, checkout, account pages, notifications, contact handling, and an elevated storefront UI with responsive navigation and boutique-style presentation for a modest fashion store.
 
 ## Stack
 
@@ -10,7 +10,7 @@ GOLDORA is a full-stack luxury e-commerce project built with a Django REST backe
 ## Project Structure
 
 ```text
-GOLDORA/
+GIRL HOUSE/
 |-- config/        Django project settings and URL routing
 |-- users/         Authentication, profile, address APIs
 |-- products/      Products, categories, wishlist, reviews

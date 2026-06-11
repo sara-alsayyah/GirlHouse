@@ -50,10 +50,10 @@ export default function NotificationsPage() {
           <div>
             <h1 className="section-heading text-5xl">Notifications</h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
-              A GOLDORA activity center for order updates, wishlist alerts, and fresh offers.
+              A GIRL HOUSE activity center for order updates, wishlist alerts, and fresh offers.
             </p>
           </div>
-          <div className="rounded-full border border-[rgba(143,108,29,0.16)] bg-white/80 px-5 py-3 text-sm text-[var(--gold-deep)]">
+          <div className="rounded-full border border-[rgba(166,122,122,0.16)] bg-white/80 px-5 py-3 text-sm text-[var(--gold-deep)]">
             {unreadCount} unread
           </div>
         </div>

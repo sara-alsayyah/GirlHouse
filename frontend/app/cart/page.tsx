@@ -21,15 +21,15 @@ export default function CartPage() {
         <p className="text-xs uppercase tracking-[0.36em] text-[var(--gold-deep)]">Shopping bag</p>
         <h1 className="section-heading mt-4 text-5xl">Review your bag before checkout.</h1>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-white/66 p-4">
+          <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Items</p>
             <p className="mt-2 font-[var(--font-display)] text-3xl">{cartItems.length}</p>
           </div>
-          <div className="rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-white/66 p-4">
+          <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Estimated delivery</p>
             <p className="mt-2 text-sm text-[var(--muted)]">3-6 business days</p>
           </div>
-          <div className="rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-white/66 p-4">
+          <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Protection</p>
             <p className="mt-2 text-sm text-[var(--muted)]">Secure order tracking and checkout</p>
           </div>
@@ -61,7 +61,7 @@ export default function CartPage() {
                       </div>
                       <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{item.product.description}</p>
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 rounded-full border border-[rgba(143,108,29,0.18)] px-3 py-2">
+                        <div className="flex items-center gap-3 rounded-full border border-[rgba(166,122,122,0.18)] px-3 py-2">
                           <button type="button" onClick={() => void changeQuantity(item.id, item.quantity - 1)} className="px-2">-</button>
                           <span className="min-w-6 text-center">{item.quantity}</span>
                           <button type="button" onClick={() => void changeQuantity(item.id, item.quantity + 1)} className="px-2">+</button>
@@ -92,7 +92,7 @@ export default function CartPage() {
 
         <aside className="luxury-card h-fit rounded-[34px] p-6">
           <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">Order summary</p>
-          <div className="mt-6 space-y-4 rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-white/66 p-4">
+          <div className="mt-6 space-y-4 rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
             <div className="flex items-center justify-between text-sm text-[var(--muted)]">
               <span>Subtotal</span>
               <span>{subtotal}</span>
@@ -105,13 +105,13 @@ export default function CartPage() {
               <span>Estimated taxes</span>
               <span>{money(taxes)}</span>
             </div>
-            <div className="flex items-center justify-between border-t border-[rgba(143,108,29,0.12)] pt-4 text-sm text-[var(--muted)]">
+            <div className="flex items-center justify-between border-t border-[rgba(166,122,122,0.12)] pt-4 text-sm text-[var(--muted)]">
               <span>Total</span>
               <span className="text-xl text-[var(--foreground)]">{money(total)}</span>
             </div>
           </div>
 
-          <div className="mt-6 rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-[linear-gradient(135deg,#fffdf4,#f0dfb8)] p-4">
+          <div className="mt-6 rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-[linear-gradient(135deg,#fffdf4,#f0d5cf)] p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--gold-deep)]">Checkout note</p>
             <p className="mt-2 text-sm leading-7 text-[var(--muted)]">Shipping, address details, and payment method will be confirmed on the next step.</p>
           </div>

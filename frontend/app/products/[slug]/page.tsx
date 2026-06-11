@@ -136,7 +136,7 @@ export default function ProductDetailPage() {
       { name: "Ruby", swatch: "#8f2136" },
     ],
     jewelry: [
-      { name: "Gold", swatch: "#d4af37" },
+      { name: "Gold", swatch: "#c99999" },
       { name: "Silver", swatch: "#c4c9cf" },
       { name: "Rose gold", swatch: "#d59d84" },
     ],
@@ -150,7 +150,7 @@ export default function ProductDetailPage() {
     home: ["Single", "Set of 2"],
   };
   const colorOptions = colorOptionsByCategory[product.category?.slug] ?? [
-    { name: "Signature", swatch: "#d4af37" },
+    { name: "Signature", swatch: "#c99999" },
     { name: "Stone", swatch: "#d2cab9" },
   ];
   const sizeOptions = sizeOptionsByCategory[product.category?.slug] ?? ["Standard"];

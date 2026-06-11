@@ -1,4 +1,4 @@
-# GOLDORA Frontend
+# GIRL HOUSE Frontend
 
 Luxury e-commerce frontend built with Next.js for a full-stack project.
 

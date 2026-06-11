@@ -1,2 +1,2 @@
-export const BRAND_NAME = "GOLDORA";
-export const BRAND_TAGLINE = "Everything, Elegantly";
+export const BRAND_NAME = "GIRL HOUSE";
+export const BRAND_TAGLINE = "Shop with Grace";

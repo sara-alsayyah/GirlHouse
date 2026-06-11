@@ -41,8 +41,8 @@ export function WishlistDrawer() {
                 wishlistItems.map((item) => {
                   const imageSrc = resolveMediaUrl(item.product.image);
                   return (
-                    <div key={item.id} className="flex gap-4 rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-white/72 p-4">
-                      <div className="h-24 w-20 overflow-hidden rounded-[18px] bg-[linear-gradient(135deg,#fff6d9,#d4af37)]">
+                    <div key={item.id} className="flex gap-4 rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/72 p-4">
+                      <div className="h-24 w-20 overflow-hidden rounded-[18px] bg-[linear-gradient(135deg,#fff0ed,#c99999)]">
                         {imageSrc ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={imageSrc} alt={item.product.name} className="h-full w-full object-cover" />
