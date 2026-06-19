@@ -1,16 +1,16 @@
 @import "tailwindcss";
 :root {
   --background: #fff8f7;
-  --surface: rgba(255,255,255,.88);
-  --surface-strong: rgba(255,255,255,.95);
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-strong: rgba(255, 255, 255, 0.95);
   --foreground: #4b343a;
   --muted: #8f727a;
-  --line: rgba(183,136,149,.18);
+  --line: rgba(183, 136, 149, 0.18);
   --gold: #f3c85f;
   --gold-soft: #f7dd93;
   --gold-deep: #d4a63f;
   --beige: #f7ecef;
-  --shadow: 0 20px 60px rgba(183,136,149,.12);
+  --shadow: 0 20px 60px rgba(183, 136, 149, 0.12);
   --radius-xl: 28px;
   --radius-lg: 18px;
   --font-display: "Playfair Display", serif;
@@ -42,6 +42,11 @@ html {
   scroll-behavior: smooth;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 .nav-icon {
   @apply flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition;
 }
@@ -51,7 +56,7 @@ body {
   min-height: 100vh;
   color: var(--foreground);
   background:
-    radial-gradient(circle at top, rgba(243, 200, 95, 0.10), transparent 30%),
+    radial-gradient(circle at top, rgba(243, 200, 95, 0.1), transparent 30%),
     linear-gradient(180deg, #fffdf8 0%, #f5ede3 48%, #efe2cf 100%);
   font-family: var(--font-body);
 }
@@ -59,7 +64,11 @@ body {
 html[data-theme="dark"] body {
   background:
     radial-gradient(circle at top, rgba(212, 175, 55, 0.14), transparent 24%),
-    radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.08), transparent 20%),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(212, 175, 55, 0.08),
+      transparent 20%
+    ),
     linear-gradient(180deg, #100c08 0%, #16100b 48%, #1d1510 100%);
 }
 
@@ -68,7 +77,9 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 24px 24px;
   opacity: 0.18;
   z-index: -1;
@@ -112,7 +123,11 @@ textarea {
   pointer-events: none;
   background:
     linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(201, 153, 153, 0.1), transparent 24%);
+    radial-gradient(
+      circle at bottom left,
+      rgba(201, 153, 153, 0.1),
+      transparent 24%
+    );
   z-index: -1;
 }
 
@@ -125,13 +140,21 @@ textarea {
 
 .luxury-card {
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(250, 242, 240, 0.82));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(250, 242, 240, 0.82)
+  );
   border: 1px solid rgba(166, 122, 122, 0.14);
   box-shadow: 0 18px 45px rgba(100, 70, 75, 0.08);
 }
 
 html[data-theme="dark"] .luxury-card {
-  background: linear-gradient(180deg, rgba(32, 22, 27, 0.94), rgba(25, 18, 22, 0.88));
+  background: linear-gradient(
+    180deg,
+    rgba(32, 22, 27, 0.94),
+    rgba(25, 18, 22, 0.88)
+  );
   border-color: rgba(201, 153, 153, 0.14);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
 }
@@ -195,7 +218,9 @@ html[data-theme="dark"] .soft-outline {
   pointer-events: none;
   opacity: 0;
   transition: opacity 240ms ease;
-  box-shadow: 0 0 0 1px rgba(201, 153, 153, 0.35), 0 20px 45px rgba(201, 153, 153, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(201, 153, 153, 0.35),
+    0 20px 45px rgba(201, 153, 153, 0.12);
 }
 
 .product-glow:hover::after {

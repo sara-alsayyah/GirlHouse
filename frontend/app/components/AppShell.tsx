@@ -12,12 +12,9 @@ import { WishlistDrawer } from "@/app/components/WishlistDrawer";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-const hideLayout = [
-  "/login",
-  "/register",
-  "/checkout",
-  "/admin"
-].includes(pathname);
+  const hideLayout =
+    pathname.startsWith("/admin") ||
+    ["/login", "/register", "/checkout"].includes(pathname);
 
   return (
     <>

@@ -94,7 +94,7 @@ export default function HomePage() {
                 MODESTY <p>WITH{" "}
                 <span style={{ color: "#d4b080" }}>ELEGANCE</span></p>
               </h1>
-              <p className="mt-4 text-base *:text-[#e8cfc0] text-left" dir="rtl">
+              <p className="mt-4 text-base !text-[#e8cfc0] text-left" dir="rtl">
                 حيث تلتقي الأناقة بالاحتشام
               </p>
             </motion.div>
