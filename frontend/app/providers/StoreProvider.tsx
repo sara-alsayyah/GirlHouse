@@ -196,7 +196,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         clearAuthState("Your session expired. Please sign in again.");
         return;
       }
-      console.log("CART ERROR FULL:", error);
       setStatusMessage(getErrorMessage(error, "Unable to load cart"));
     }
   }
@@ -431,7 +430,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white px-6 py-3 rounded-full shadow"
+            role="status"
+            aria-live="polite"
+            className="fixed bottom-6 left-1/2 z-[120] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-full border border-[rgba(166,122,122,0.14)] bg-white px-6 py-3 text-center text-sm shadow"
           >
             {statusMessage}
           </motion.div>

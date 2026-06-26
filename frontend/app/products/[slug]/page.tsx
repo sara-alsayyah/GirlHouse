@@ -71,8 +71,7 @@ export default function ProductDetailPage() {
 
         setRelated(safeRelated.filter((item) => item.slug !== detail.slug).slice(0, 4));
         addRecentlyViewedRef.current(detail);
-      } catch (error) {
-        console.error("Product load failed:", error);
+      } catch {
         if (cancelled) return;
         setProduct(null);
         setReviews([]);
@@ -157,6 +156,7 @@ export default function ProductDetailPage() {
   const activeColor = selectedColor ?? colorOptions[0].name;
   const activeSize = selectedSize ?? sizeOptions[0];
   const effectiveQuantity = selectedQuantity;
+  const soldOut = product.stock <= 0;
 
   return (
     <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-16 pt-6">
@@ -260,7 +260,9 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedQuantity((current) => Math.max(1, current - 1))}
-                  className="px-2"
+                  disabled={selectedQuantity <= 1}
+                  className="px-2 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Decrease quantity"
                 >
                   -
                 </button>
@@ -268,7 +270,9 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedQuantity((current) => Math.min(product.stock, current + 1))}
-                  className="px-2"
+                  disabled={soldOut || selectedQuantity >= product.stock}
+                  className="px-2 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Increase quantity"
                 >
                   +
                 </button>
@@ -283,9 +287,10 @@ export default function ProductDetailPage() {
                 type="button"
                 whileTap={{ scale: 0.97 }}
                 onClick={() => addProductToCart(product, imageRef.current, effectiveQuantity)}
-                className="gold-button rounded-full px-6 py-3 text-sm uppercase"
+                disabled={soldOut}
+                className="gold-button rounded-full px-6 py-3 text-sm uppercase disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Add {effectiveQuantity > 1 ? `${effectiveQuantity} pieces` : "to cart"}
+                {soldOut ? "Sold out" : `Add ${effectiveQuantity > 1 ? `${effectiveQuantity} pieces` : "to cart"}`}
               </motion.button>
 
               <button

@@ -7,35 +7,3 @@
   text-align: center;
 }
 
-.logo-image-wrap {
-  width: 120px;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-image {
-  width: 120px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.logo-text {
-  font-family: "Playfair Display", serif;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 6px;
-  color: #2d2025;
-  margin: 0;
-}
-
-.logo-tagline {
-  font-family: "Playfair Display", serif;
-  font-size: 12px;
-  font-style: italic;
-  letter-spacing: 2px;
-  color: #8a7a7d;
-  margin: 2px 0 0 0;
-}

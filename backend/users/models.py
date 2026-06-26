@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -48,11 +49,10 @@ class User(AbstractUser):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='addresses')
-
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="addresses")
     full_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
-    city = models.CharField(max_length=100)
+    city = models.ForeignKey("core.City", on_delete=models.PROTECT)
     street = models.CharField(max_length=255)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -61,3 +61,8 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.city}"
+
+
+
+    
+

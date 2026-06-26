@@ -1,12 +1,32 @@
 from django.urls import path
-from .views import CheckoutAPIView, UserOrdersAPIView, OrderDetailAPIView, AnalyticsAPIView
+
+from .views import (
+    CheckoutAPIView,
+    UserOrdersAPIView,
+    OrderDetailAPIView,
+)
+
+app_name = "orders"
 
 urlpatterns = [
-    path('checkout/', CheckoutAPIView.as_view()),
-    path('', UserOrdersAPIView.as_view()),  
-    path('<int:id>/', OrderDetailAPIView.as_view()),
-    path('analytics/', AnalyticsAPIView.as_view()),
+
+
+    path(
+        "checkout/",
+        CheckoutAPIView.as_view(),
+        name="checkout"
+    ),
+
+
+    path(
+        "",
+        UserOrdersAPIView.as_view(),
+        name="user-orders"
+    ),
+
+    path(
+        "<str:order_number>/",
+        OrderDetailAPIView.as_view(),
+        name="order-detail"
+    ),
 ]
-
-
-

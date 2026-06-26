@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { addAddress, checkout, getAddresses, money } from "@/app/lib/api";
-import type { Address } from "@/app/lib/types";
+import { addAddress, checkout, getAddresses, getCities, getApiErrorMessage, money } from "@/app/lib/api";
+import type { Address, City } from "@/app/lib/types";
 import { PageReveal } from "@/app/components/PageReveal";
 import { useStore } from "@/app/providers/StoreProvider";
 
@@ -11,18 +11,12 @@ export default function CheckoutPage() {
   const { token, cartItems = [], refreshCart } = useStore();
 
   const [addresses, setAddresses] = useState<Address[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
   const [coupon, setCoupon] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "whish">("cod");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [discount, setDiscount] = useState(0);
-  const [cardDetails, setCardDetails] = useState({
-    number: "",
-    name: "",
-    expiry: "",
-    cvv: "",
-  });
   const [contact, setContact] = useState({
     email: "",
     phone: "",
@@ -32,7 +26,7 @@ export default function CheckoutPage() {
   const [addressForm, setAddressForm] = useState({
     full_name: "",
     phone: "",
-    city: "",
+    city: 0,
     street: "",
   });
 
@@ -49,6 +43,12 @@ export default function CheckoutPage() {
       })
       .catch(() => setAddresses([]));
   }, [token]);
+
+  useEffect(() => {
+    getCities()
+      .then(setCities)
+      .catch(() => setCities([]));
+  }, []);
 
   useEffect(() => {
     if (!message) return;
@@ -72,7 +72,7 @@ export default function CheckoutPage() {
     setAddressForm({
       full_name: "",
       phone: "",
-      city: "",
+      city: 0,
       street: "",
     });
     setMessage("Address saved.");
@@ -99,18 +99,13 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (paymentMethod === "card" && (!cardDetails.number || !cardDetails.name || !cardDetails.expiry || !cardDetails.cvv)) {
-      setMessage("Please complete the card details.");
-      return;
-    }
-
     try {
       setLoading(true);
       const response = await checkout(token, selectedAddress, coupon || undefined, paymentMethod);
       await refreshCart();
       setMessage(response.message);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Checkout failed");
+      setMessage(getApiErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -122,7 +117,7 @@ export default function CheckoutPage() {
   );
   const estimatedShipping = cartItems.length ? 7.5 : 0;
   const estimatedTax = cartItems.length ? numericSubtotal * 0.04 : 0;
- const orderTotal = numericSubtotal + estimatedShipping + estimatedTax - discount;
+  const orderTotal = numericSubtotal + estimatedShipping + estimatedTax;
   const orderSteps = ["Bag", "Address", "Payment", "Review"];
 
   return (
@@ -227,7 +222,6 @@ export default function CheckoutPage() {
               {[
                 ["full_name", "Full name"],
                 ["phone", "Phone"],
-                ["city", "City"],
                 ["street", "Street address"],
               ].map(([key, placeholder]) => (
                 <input
@@ -243,6 +237,23 @@ export default function CheckoutPage() {
                   className="rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none sm:col-span-2"
                 />
               ))}
+              <select
+                value={addressForm.city}
+                onChange={(e) =>
+                  setAddressForm((current) => ({
+                    ...current,
+                    city: Number(e.target.value),
+                  }))
+                }
+                className="rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none"
+              >
+                <option value={0}>City</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <button
@@ -305,8 +316,7 @@ export default function CheckoutPage() {
             <div className="mt-5 space-y-3">
               {[
                 ["cod", "Cash on delivery", "Pay once the package reaches your door."],
-                ["card", "Credit or debit card", "Use a secure card checkout with verification."],
-                ["bank", "Bank transfer", "We will send transfer details after the order is placed."],
+                ["whish", "Whish Money", "Reserve the order now and receive payment instructions after checkout."],
               ].map(([value, label, description]) => (
                 <label
                   key={value}
@@ -319,7 +329,7 @@ export default function CheckoutPage() {
                   <input
                     type="radio"
                     checked={paymentMethod === value}
-                    onChange={() => setPaymentMethod(value)}
+                    onChange={() => setPaymentMethod(value as "cod" | "whish")}
                   />
                   <div>
                     <p className="text-sm font-medium">{label}</p>
@@ -328,35 +338,6 @@ export default function CheckoutPage() {
                 </label>
               ))}
             </div>
-
-            {paymentMethod === "card" ? (
-              <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <input
-                  value={cardDetails.number}
-                  onChange={(e) => setCardDetails((current) => ({ ...current, number: e.target.value }))}
-                  placeholder="Card number"
-                  className="rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none sm:col-span-2"
-                />
-                <input
-                  value={cardDetails.name}
-                  onChange={(e) => setCardDetails((current) => ({ ...current, name: e.target.value }))}
-                  placeholder="Name on card"
-                  className="rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none sm:col-span-2"
-                />
-                <input
-                  value={cardDetails.expiry}
-                  onChange={(e) => setCardDetails((current) => ({ ...current, expiry: e.target.value }))}
-                  placeholder="MM/YY"
-                  className="rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none"
-                />
-                <input
-                  value={cardDetails.cvv}
-                  onChange={(e) => setCardDetails((current) => ({ ...current, cvv: e.target.value }))}
-                  placeholder="CVV"
-                  className="rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none"
-                />
-              </div>
-            ) : null}
           </div>
         </div>
 
@@ -404,20 +385,19 @@ export default function CheckoutPage() {
             className="mt-6 w-full rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none"
           />
           <button
-  type="button"
-  onClick={() => {
-  if (!coupon.trim()) {
-    setMessage("Enter a coupon code");
-    return;
-  }
+            type="button"
+            onClick={() => {
+              if (!coupon.trim()) {
+                setMessage("Enter a coupon code");
+                return;
+              }
 
-  setMessage("Coupon will be applied at checkout");
-}}
-
-  className="gold-button mt-5 rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
->
-  Apply coupon
-</button>
+              setMessage("Coupon will be validated when you place the order.");
+            }}
+            className="gold-button mt-5 rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
+          >
+            Apply coupon
+          </button>
 
           <div className="mt-6 rounded-[24px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
             <div className="flex items-center justify-between text-sm text-[var(--muted)]">
@@ -457,7 +437,7 @@ export default function CheckoutPage() {
           </button>
 
           {message ? (
-            <p className="mt-4 text-sm text-[var(--muted)]">{message}</p>
+            <p className="mt-4 text-sm text-[var(--muted)]" role="status" aria-live="polite">{message}</p>
           ) : null}
         </aside>
       </section>

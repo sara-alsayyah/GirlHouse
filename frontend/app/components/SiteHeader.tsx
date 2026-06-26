@@ -10,8 +10,6 @@ import {
   BagIcon,
   CloseIcon,
   HeartIcon,
-  HomeIcon,
-  MailIcon,
   MenuIcon,
   SearchIcon,
   UserIcon,
@@ -45,16 +43,6 @@ export function SiteHeader() {
 
   return (
     <header className="relative z-30">
-      {/* Top announcement bar (static) */}
-      {/* <div className="w-full bg-[linear-gradient(90deg,#b78895,#d8b4bc)] px-6 py-2 text-center">
-        <p className="text-xs text-white/90 tracking-wide">
-          <span className="hidden sm:inline">تصفح متجرنا |</span> Welcome to our
-          shop
-          <span className="hidden sm:inline"> | أهلا وسهلا</span>
-        </p>
-      </div> */}
-
-      {/* Overlay navbar (absolute) */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled ? "bg-white/50 backdrop-blur-xl shadow-sm" : "bg-transparent"
@@ -110,7 +98,6 @@ export function SiteHeader() {
                 </button>
               </div>
 
-              {/* Center logo */}
               <div
                 className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
                   scrolled
@@ -123,7 +110,6 @@ export function SiteHeader() {
                 </Link>
               </div>
 
-              {/* Right nav links */}
               <div className="hidden lg:flex items-center justify-end gap-1 flex-1">
                 {rightNavigation.map((item) => {
                   const isActive =
@@ -183,7 +169,6 @@ export function SiteHeader() {
         </div>
       </nav>
 
-      {/* Mobile menu (below overlay) */}
       {isMobileMenuOpen && (
         <div className="mt-20 bg-white/95 border-t border-[rgba(166,122,122,0.08)] lg:hidden">
           <div className="space-y-2 px-4 py-4">

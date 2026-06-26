@@ -1,10 +1,11 @@
 export interface DashboardStat {
   title: string;
-  value: number;
+  value: number | string;
 }
 
 export interface SalesDataPoint {
-  label: string;
+  day: string;
+  sales: number;
   revenue: number;
   orders: number;
 }
@@ -20,10 +21,11 @@ export interface TopProduct {
 
 export interface RecentOrder {
   id: number;
+  order_number: string;
   customer_email: string;
   items_count: number;
   total_price: number;
-  status: "pending" | "paid" | "shipped" | "delivered";
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   created_at: string;
 }
 

@@ -44,7 +44,9 @@ export function CategoriesTable({
                 </td>
 
                 <td className="px-4 py-5">
-                  {new Date(category.created_at).toLocaleDateString()}
+                  {category.created_at
+                    ? new Date(category.created_at).toLocaleDateString()
+                    : "-"}
                 </td>
 
                 <td className="px-4 py-5">

@@ -5,7 +5,7 @@ export interface AdminCategory {
 
   products_count: number;
 
-  created_at: string;
+  created_at?: string;
 }
 
 export interface CategoriesStats {

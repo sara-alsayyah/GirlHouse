@@ -45,10 +45,10 @@ export default function RegisterPage() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const countries = [
-    { code: "LB", name: "Lebanon", dial: "+961", flag: "🇱🇧" },
-    { code: "US", name: "United States", dial: "+1", flag: "🇺🇸" },
-    { code: "FR", name: "France", dial: "+33", flag: "🇫🇷" },
-    { code: "AE", name: "UAE", dial: "+971", flag: "🇦🇪" },
+    { code: "LB", name: "Lebanon", dial: "+961" },
+    { code: "US", name: "United States", dial: "+1" },
+    { code: "FR", name: "France", dial: "+33" },
+    { code: "AE", name: "UAE", dial: "+971" },
   ];
 
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
@@ -146,8 +146,6 @@ export default function RegisterPage() {
       router.push("/account");
 
     } catch (error: unknown) {
-      console.log("REGISTER ERROR:", error);
-
       setErrors({
         general: safeErrorMessage(error),
       });
@@ -204,7 +202,7 @@ export default function RegisterPage() {
             >
               {countries.map(c => (
                 <option key={c.code} value={c.code}>
-                  {c.flag} {c.dial}
+                  {c.code} {c.dial}
                 </option>
               ))}
             </select>

@@ -9,5 +9,5 @@ urlpatterns = [
     path('wishlist/remove/<int:product_id>/', RemoveFromWishlistAPIView.as_view()),
     path('<int:product_id>/reviews/', ProductReviewsAPIView.as_view()),
     path('<int:product_id>/reviews/add/', AddReviewAPIView.as_view()),
-    path('<slug:slug>/', ProductDetailAPIView.as_view(), name='product-detail'),
+    path('slug/<slug:slug>/', ProductDetailAPIView.as_view(), name='product-detail')
 ]

@@ -191,7 +191,7 @@ useEffect(() => {
                   </div>
                 ) : (
                   orders.map((order) => {
-                    const steps = ["pending", "paid", "shipped", "delivered"];
+                    const steps = ["pending", "processing", "shipped", "delivered"];
                     const activeIndex = steps.indexOf(order.status);
                     return (
                       <div key={order.id} className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-5">

@@ -27,9 +27,10 @@ export function OrdersFilters({
       >
         <option value="all">All Status</option>
         <option value="pending">pending</option>
-        <option value="paid">paid</option>
+        <option value="processing">processing</option>
         <option value="shipped">shipped</option>
         <option value="delivered">delivered</option>
+        <option value="cancelled">cancelled</option>
       </select>
     </div>
   );

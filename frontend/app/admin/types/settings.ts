@@ -13,6 +13,7 @@ export interface ShippingSettings {
 export interface PaymentSettings {
   cash_on_delivery: boolean;
   stripe_enabled: boolean;
+  whish_enabled?: boolean;
 }
 
 export interface NotificationSettings {

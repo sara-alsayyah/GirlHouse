@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AdminContainer } from "../components/AdminContainer";
 import { OrdersStats } from "./components/OrdersStats";
 import { OrdersFilters } from "./components/OrdersFilters";
@@ -8,15 +8,49 @@ import { OrdersTable } from "./components/OrdersTable";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 import { EditOrderModal } from "./components/EditOrderModal";
 import { AdminOrder } from "../types/orders";
-import { ordersMock, ordersStats } from "../data/ordersMock";
+import {
+  adminGetOrders,
+  asArray,
+  cancelOrder,
+  getApiErrorMessage,
+  getOrdersStats,
+  getStoredAccessToken,
+  updateOrderStatus,
+} from "@/app/lib/api";
 
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const token = getStoredAccessToken();
+    if (!token) {
+      setError("Please log in as an admin to manage orders.");
+      setLoading(false);
+      return;
+    }
+
+    adminGetOrders(token)
+      .then((payload) => {
+        setOrders(asArray(payload).map((order) => ({
+          ...order,
+          customer_email: order.customer_email ?? (order as unknown as { customer?: string }).customer ?? "",
+          items_count: order.items_count ?? 0,
+          total_price: Number(order.total_price),
+        })));
+        setError("");
+      })
+      .catch((error) => setError(getApiErrorMessage(error)))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filteredOrders = useMemo(() => {
-    return ordersMock.filter((order) => {
+    return orders.filter((order) => {
       const matchesSearch = order.customer_email
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -26,23 +60,43 @@ export default function OrdersPage() {
 
       return matchesSearch && matchesStatus;
     });
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, orders]);
 
-  const handleDelete = () => {
-    console.log("Delete order:", orderToDelete);
+  const ordersStats = useMemo(() => getOrdersStats(orders), [orders]);
 
-    // Later:
-    // await deleteOrder(orderToDelete)
-
+  const handleDelete = async () => {
+    const token = getStoredAccessToken();
+    if (!token || orderToDelete === null) return;
+    try {
+      await cancelOrder(token, orderToDelete);
+      setOrders((current) =>
+        current.map((order) =>
+          order.id === orderToDelete ? { ...order, status: "cancelled" } : order,
+        ),
+      );
+    } catch (error) {
+      setError(getApiErrorMessage(error));
+    }
     setOrderToDelete(null);
   };
 
-  const handleSaveOrder = (updatedOrder: AdminOrder) => {
-    console.log("Updated order:", updatedOrder);
-
-    // Later:
-    // await updateOrder(updatedOrder.id, updatedOrder);
-
+  const handleSaveOrder = async (updatedOrder: AdminOrder) => {
+    const token = getStoredAccessToken();
+    if (!token) return;
+    try {
+      if (updatedOrder.status === "cancelled") {
+        await cancelOrder(token, updatedOrder.id);
+      } else {
+        await updateOrderStatus(token, updatedOrder.id, updatedOrder.status);
+      }
+      setOrders((current) =>
+        current.map((order) =>
+          order.id === updatedOrder.id ? { ...order, status: updatedOrder.status } : order,
+        ),
+      );
+    } catch (error) {
+      setError(getApiErrorMessage(error));
+    }
     setSelectedOrder(null);
   };
   return (
@@ -58,6 +112,12 @@ export default function OrdersPage() {
 
         <OrdersStats stats={ordersStats} />
 
+        {error && (
+          <div className="rounded-[18px] border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         <OrdersFilters
           searchTerm={searchTerm}
           statusFilter={statusFilter}
@@ -65,11 +125,15 @@ export default function OrdersPage() {
           onStatusChange={setStatusFilter}
         />
 
-        <OrdersTable
+        {loading ? (
+          <div className="h-72 animate-pulse rounded-[28px] bg-white" />
+        ) : (
+          <OrdersTable
           orders={filteredOrders}
           onDeleteClick={setOrderToDelete}
           onEditClick={setSelectedOrder}
-        />
+          />
+        )}
       </div>
       <ConfirmDeleteModal
         isOpen={orderToDelete !== null}

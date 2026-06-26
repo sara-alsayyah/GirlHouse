@@ -26,7 +26,7 @@ export function TopProductsCard({ products }: TopProductsCardProps) {
             className="flex items-center gap-4 rounded-2xl p-2 transition hover:bg-[#fcf7f8]"
           >
             <img
-              src={product.image}
+              src={product.image ?? "/placeholder.png"}
               alt={product.name}
               className="h-16 w-16 rounded-xl object-cover"
             />

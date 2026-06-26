@@ -24,9 +24,10 @@ export function EditOrderModal({ order, isOpen, onCancel, onSave }: Props) {
 
   const statusColors = {
     pending: "bg-red-100 text-red-800 border-red-300",
-    paid: "bg-yellow-100 text-yellow-800 border-yellow-300",
+    processing: "bg-yellow-100 text-yellow-800 border-yellow-300",
     shipped: "bg-blue-100 text-blue-800 border-blue-300",
     delivered: "bg-green-100 text-green-800 border-green-300",
+    cancelled: "bg-gray-100 text-gray-700 border-gray-300",
   };
 
   return (
@@ -69,12 +70,7 @@ export function EditOrderModal({ order, isOpen, onCancel, onSave }: Props) {
                 <input
                   type="email"
                   value={formData.customer_email}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      customer_email: e.target.value,
-                    })
-                  }
+                  readOnly
                   className="w-full rounded-xl border border-[#ead9dd] px-4 py-3 text-[#4b343a] placeholder-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b78895] focus:border-transparent hover:border-[#b78895]"
                   placeholder="customer@example.com"
                 />
@@ -99,14 +95,17 @@ export function EditOrderModal({ order, isOpen, onCancel, onSave }: Props) {
                   <option value="pending" className="bg-white text-gray-800">
                     Pending
                   </option>
-                  <option value="paid" className="bg-white text-gray-800">
-                    Paid
+                  <option value="processing" className="bg-white text-gray-800">
+                    Processing
                   </option>
                   <option value="shipped" className="bg-white text-gray-800">
                     Shipped
                   </option>
                   <option value="delivered" className="bg-white text-gray-800">
                     Delivered
+                  </option>
+                  <option value="cancelled" className="bg-white text-gray-800">
+                    Cancelled
                   </option>
                 </select>
               </div>
@@ -121,12 +120,7 @@ export function EditOrderModal({ order, isOpen, onCancel, onSave }: Props) {
                   type="number"
                   min="0"
                   value={formData.items_count}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      items_count: Number(e.target.value),
-                    })
-                  }
+                  readOnly
                   className="w-full rounded-xl border border-[#ead9dd] px-4 py-3 text-[#4b343a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b78895] focus:border-transparent hover:border-[#b78895]"
                   placeholder="0"
                 />
@@ -147,12 +141,7 @@ export function EditOrderModal({ order, isOpen, onCancel, onSave }: Props) {
                     min="0"
                     step="0.01"
                     value={formData.total_price}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        total_price: Number(e.target.value),
-                      })
-                    }
+                    readOnly
                     className="w-full rounded-xl border border-[#ead9dd] px-4 pl-8 py-3 text-[#4b343a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b78895] focus:border-transparent hover:border-[#b78895]"
                     placeholder="0.00"
                   />

@@ -80,7 +80,7 @@ export function ProductCard({
     <motion.article
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className={`product-glow luxury-card group flex h-full flex-col overflow-hidden rounded-[28px] ${
+      className={`product-glow luxury-card group flex h-full flex-col overflow-hidden rounded-[14px] ${
         featured ? "md:flex-row" : ""
       }`}
     >

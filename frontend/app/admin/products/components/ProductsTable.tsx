@@ -1,6 +1,7 @@
 import { AdminProduct } from "../../types/products";
 import { ProductStockBadge } from "./ProductStockBadge";
 import { ProductActions } from "./ProductActions";
+import { resolveMediaUrl } from "@/app/lib/api";
 
 interface Props {
   products: AdminProduct[];
@@ -31,7 +32,7 @@ export function ProductsTable({ products, onDeleteClick, onEditClick }: Props) {
                 <td className="px-4 py-5">
                   <div className="flex items-center gap-3">
                     <img
-                      src={product.image ?? "/placeholder.png"}
+                      src={resolveMediaUrl(product.image) ?? "/placeholder.png"}
                       alt={product.name}
                       className="h-12 w-12 rounded-xl object-cover"
                     />
@@ -46,7 +47,7 @@ export function ProductsTable({ products, onDeleteClick, onEditClick }: Props) {
                   </div>
                 </td>
 
-                <td className="px-4 py-5">{product.category}</td>
+                <td className="px-4 py-5">{product.category.name}</td>
 
                 <td className="px-4 py-5">${product.price}</td>
 
