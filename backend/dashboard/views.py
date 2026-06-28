@@ -8,7 +8,17 @@ from core.permissions import IsAdmin
 from orders.models import Order, OrderItem
 from products.models import Product
 from users.models import User
+from .models import HeroSlide
+from .serializers import HeroSlideSerializer
 
+
+class HeroSlideAPIView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        slides = HeroSlide.objects.filter(is_active=True).order_by("order")
+        serializer = HeroSlideSerializer(slides, many=True)
+        return Response(serializer.data)
 
 class AdminDashboardAPIView(APIView):
     permission_classes = [IsAdmin]

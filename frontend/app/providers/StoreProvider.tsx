@@ -267,6 +267,29 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   /* ================= VALUE ================= */
 
+  async function toggleWishlist(product: Product) {
+  const token = localStorage.getItem("access");
+  if (!token) return;
+
+  const exists = wishlistItems.some((i) => i.product.id === product.id);
+
+  try {
+    if (exists) {
+      await removeWishlistItem(token, product.id);
+      setWishlistItems((prev) =>
+        prev.filter((i) => i.product.id !== product.id)
+      );
+    } else {
+      await addWishlistItem(token, product.id);
+      await refreshWishlist(token);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+function isWishlisted(productId: number) {
+  return wishlistItems.some((i) => i.product.id === productId);
+}
   const value: StoreContextValue = {
     token,
     user,
@@ -321,9 +344,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     saveItemForLater: () => {},
     restoreSavedItem: async () => {},
 
-    toggleWishlist: async () => {},
-    isWishlisted: () => false,
-
     addRecentlyViewed: (p) =>
       setRecentlyViewed((c) =>
         uniqueRecentProducts([p, ...c]).slice(0, 8)
@@ -331,9 +351,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     setQuickViewProduct,
 
+    toggleWishlist,
+    isWishlisted,
+
     toggleThemeMode: () =>
       setThemeMode((t) => (t === "light" ? "dark" : "light")),
   };
+
 
   return (
     <StoreContext.Provider value={value}>
