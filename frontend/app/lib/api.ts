@@ -435,7 +435,7 @@ type RawDashboard = {
   total_customers: number;
   total_products: number;
   recent_orders?: Record<string, unknown>[];
-  top_products?: Record<string, unknown>[];
+  top_products?: Record<string, unknown>[]; 
   monthly_revenue?: Record<string, unknown>[];
 };
 
@@ -473,14 +473,14 @@ export async function adminGetDashboard(token: string): Promise<DashboardData> {
       orders: numberValue(point.orders),
     } satisfies SalesDataPoint;
   });
-  const topProducts = (data.top_products ?? []).map((product) => ({
-    id: numberValue(product.id ?? product.product_id),
-    name: String(product.name ?? ""),
-    image: resolveMediaUrl(product.image ? `/media/${product.image}` : null),
-    price: numberValue(product.price),
-    stock: numberValue(product.stock),
-    total_sold: numberValue(product.total_sold),
-  })) as TopProduct[];
+const topProducts = (data.top_products ?? []).map((product) => ({
+  id: numberValue(product.pid ?? product.product_id ?? product.id),
+  name: String(product.name ?? ""),
+  image: resolveMediaUrl(product.image ? `/media/${product.image}` : null),
+  price: numberValue(product.price),
+  stock: numberValue(product.stock),
+  total_sold: numberValue(product.total_sold),
+})) as TopProduct[];
 
   return {
     stats: [

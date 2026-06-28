@@ -2,33 +2,45 @@
 
 import { DollarSign, Package, ShoppingBag, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { AdminContainer } from "./components/AdminContainer";
-import { StatCard } from "./components/StatCard";
-import { SalesChart } from "./components/SalesChart";
-import { TopProductsCard } from "./components/TopProductsCard";
-import { RecentOrdersTable } from "./components/RecentOrdersTable";
-import { adminGetDashboard, getApiErrorMessage, getStoredAccessToken } from "@/app/lib/api";
+import { AdminContainer } from "@/app/admin/components/AdminContainer";
+import { StatCard } from "@/app/admin/components/StatCard";
+import { SalesChart } from "@/app/admin/components/SalesChart";
+import { TopProductsCard } from "@/app/admin/components/TopProductsCard";
+import { RecentOrdersTable } from "@/app/admin/components/RecentOrdersTable";
+
+import {
+  adminGetDashboard,
+  getApiErrorMessage,
+  getStoredAccessToken,
+} from "@/app/lib/api";
+
 import type { DashboardData } from "./types/dashboard";
 
 export default function AdminDashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+const router = useRouter();
 
-  useEffect(() => {
-    const token = getStoredAccessToken();
-    if (!token) {
-      setError("Please log in as an admin to view the dashboard.");
-      setLoading(false);
-      return;
-    }
+const [token, setToken] = useState<string | null>(null);
 
-    adminGetDashboard(token)
-      .then(setDashboardData)
-      .catch((error) => setError(getApiErrorMessage(error)))
-      .finally(() => setLoading(false));
-  }, []);
+useEffect(() => {
+  setToken(getStoredAccessToken());
+}, []);
+
+useEffect(() => {
+  if (!token) {
+    router.replace("/login");
+    return;
+  }
+
+  adminGetDashboard(token)
+    .then(setDashboardData)
+    .catch((error) => setError(getApiErrorMessage(error)))
+    .finally(() => setLoading(false));
+}, [token, router]);
 
   const statIcons = [
     <DollarSign size={24} key="sales" />,

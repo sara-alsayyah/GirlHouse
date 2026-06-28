@@ -75,12 +75,21 @@ class OrderAdmin(admin.ModelAdmin):
         )
 
         sales_over_time = (
-            completed_orders
-            .annotate(day=TruncDay('created_at'))
-            .values('day')
-            .annotate(total=Sum('total_price'))
-            .order_by('day')
+          completed_orders
+          .annotate(day=TruncDay('created_at'))
+          .values('day')
+          .annotate(total=Sum('total_price'))
+          .order_by('day')
         )
+
+
+        sales_over_time = [
+          {
+           "day": entry["day"].strftime("%Y-%m-%d") if entry["day"] else None,
+           "total": float(entry["total"])
+            }
+        for entry in sales_over_time
+        ]
 
         context = {
             **self.admin_site.each_context(request),

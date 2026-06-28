@@ -6,7 +6,7 @@ import { SiteFooter } from "@/app/components/SiteFooter";
 import { FloatingCart } from "@/app/components/FloatingCart";
 import { MobileDock } from "@/app/components/MobileDock";
 import { QuickViewModal } from "@/app/components/QuickViewModal";
-import { RecentlyViewedPanel } from "@/app/components/RecentlyViewedPanel";
+
 import { WishlistDrawer } from "@/app/components/WishlistDrawer";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -27,7 +27,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <SiteFooter />
           <QuickViewModal />
           <WishlistDrawer />
-          <RecentlyViewedPanel />
           <MobileDock />
           <FloatingCart />
         </>

@@ -14,12 +14,22 @@ class AdminDashboardAPIView(APIView):
     permission_classes = [IsAdmin]
 
     def get(self, request):
-
         data = cache.get("dashboard:admin:v1")
 
         if not data:
+            monthly_revenue = list(
+                Order.objects.filter(status="delivered")
+                .annotate(month=TruncMonth("created_at"))
+                .values("month")
+                .annotate(revenue=Sum("total_price"), orders=Count("id"))
+                .order_by("month")[:12]
+            )
+
             data = {
-                "total_revenue": Order.objects.filter(status="delivered").aggregate(total=Sum("total_price"))["total"] or 0,
+                "total_revenue": float(
+                    Order.objects.filter(status="delivered")
+                    .aggregate(total=Sum("total_price"))["total"] or 0
+                ),
                 "total_orders": Order.objects.count(),
                 "total_customers": User.objects.filter(is_staff=False).count(),
                 "total_products": Product.objects.count(),
@@ -37,26 +47,48 @@ class AdminDashboardAPIView(APIView):
                         items_count_value=F("items_count"),
                     )[:5]
                 ),
-                "top_products": list(
-                    OrderItem.objects.filter(order__status="delivered")
-                    .values(id=F("product__id"), name=F("product__name"), image=F("product__image"), price=F("product__price"), stock=F("product__stock"))
-                    .annotate(total_sold=Sum("quantity"))
-                    .order_by("-total_sold")[:5]
-                ),
-                "monthly_revenue": list(
-                    Order.objects.filter(status="delivered")
-                    .annotate(month=TruncMonth("created_at"))
-                    .values("month")
-                    .annotate(revenue=Sum("total_price"), orders=Count("id"))
-                    .order_by("month")[:12]
-                ),
+                 "top_products": [
+                 {
+                    "id": item["product__id"],
+                    "name": item["product__name"],
+                    "image": item["product__image"],
+                    "price": float(item["product__price"] or 0),
+                    "stock": item["product__stock"],
+                    "total_sold": item["total_sold"],
+                }
+                for item in OrderItem.objects.filter(order__status="delivered")
+                   .values(
+                     "product__id",
+                     "product__name",
+                     "product__image",
+                     "product__price",
+                     "product__stock",
+                    )
+                   .annotate(total_sold=Sum("quantity"))
+                   .order_by("-total_sold")[:5]
+                   ],
+
+            
+                "monthly_revenue": [
+                    {
+                        "month": entry["month"].strftime("%Y-%m") if entry["month"] else None,
+                        "revenue": float(entry["revenue"]),
+                        "orders": entry["orders"],
+                    }
+                    for entry in monthly_revenue
+                ],
                 "order_status_stats": list(
-                    Order.objects.values("status").annotate(count=Count("id")).order_by("status")
+                    Order.objects.values("status")
+                    .annotate(count=Count("id"))
+                    .order_by("status")
                 ),
                 "low_stock_products": list(
                     Product.objects.filter(stock__lte=Product.LOW_STOCK_THRESHOLD)
                     .values("id", "name", "stock")[:10]
                 ),
             }
+
+           
+            cache.set("dashboard:admin:v1", data, 60 * 15)
 
         return Response(data)

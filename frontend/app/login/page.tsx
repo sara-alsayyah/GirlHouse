@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { login } from "@/app/lib/api";
+import { login, getProfile } from "@/app/lib/api";
 import { PageReveal } from "@/app/components/PageReveal";
 import { useStore } from "@/app/providers/StoreProvider";
 import { EyeIcon } from "@/app/components/icons";
@@ -38,7 +38,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
 
-  // 📧 email validation
+  // email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function validate() {
@@ -55,47 +55,31 @@ export default function LoginPage() {
   }
 
   async function handleLogin() {
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
-    setLoading(true);
-    setErrors({});
+  setLoading(true);
+  setErrors({});
 
-    try {
-      const tokens = await login(form.email, form.password);
+  try {
+   const tokens = await login(form.email, form.password);
+saveToken(tokens.access, tokens.refresh);
 
-      if (remember) {
-        localStorage.setItem("remember_email", form.email);
-      }
+const user = await getProfile(tokens.access); 
 
-      saveToken(tokens.access, tokens.refresh);
-      router.push("/account");
-
-    } catch (error: unknown) {
-      try {
-        const parsed = JSON.parse(getErrorMessage(error)) as Record<string, unknown>;
-
-        const backendErrors: Errors = {};
-
-        Object.keys(parsed).forEach((key) => {
-          const value = parsed[key];
-          if (Array.isArray(value) && typeof value[0] === "string") {
-            backendErrors[key as keyof Errors] = value[0];
-          }
-        });
-
-        setErrors(backendErrors);
-      } catch {
-        setErrors({
-          general: getErrorMessage(error),
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+if (user.is_admin) {
+  router.push("/admin");
+} else {
+  router.push("/account");
+}
+  } catch (error) {
+    setErrors({ general: getErrorMessage(error) });
+  } finally {
+    setLoading(false);
+  }
   }
 
   return (

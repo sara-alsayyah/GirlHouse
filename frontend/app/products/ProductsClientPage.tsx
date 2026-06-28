@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts } from "@/app/lib/api";
+import { getProducts, adminGetCategories, asArray, getStoredAccessToken } from "@/app/lib/api";
 import { PageReveal } from "@/app/components/PageReveal";
 import { ProductCard } from "@/app/components/ProductCard";
 import type { Product } from "@/app/lib/types";
-import { commerceCategories } from "@/app/lib/categories";
+import type { AdminCategory } from "@/app/admin/types/categories";
 
 type ProductResponse = Awaited<ReturnType<typeof getProducts>>;
 
@@ -23,26 +23,40 @@ export function ProductsClientPage({
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+
   const [category, setCategory] = useState(initialCategory ?? "");
+  const [categories, setCategories] = useState<AdminCategory[]>([]);
+
   const [price, setPrice] = useState<[number, number]>([0, 500]);
   const [availability, setAvailability] = useState("all");
   const [ordering, setOrdering] = useState("-created_at");
+
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
   const [hasPrev, setHasPrev] = useState(false);
+
   const [openFilters, setOpenFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+/* =========================
+     LOAD CATEGORIES (FIXED)
+  ========================== */
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1);
-    }, 400);
+    const token = getStoredAccessToken();
 
-    return () => window.clearTimeout(timer);
-  }, [search]);
+    if (!token) {
+      setCategories([]);
+      return;
+    }
 
+    adminGetCategories(token)
+      .then((data) => setCategories(asArray(data)))
+      .catch(() => setCategories([]));
+  }, []);
+
+  /* ======================
+     PRODUCTS FETCH
+  ====================== */
   useEffect(() => {
     const params = new URLSearchParams({
       page: String(page),
@@ -69,204 +83,119 @@ export function ProductsClientPage({
       })
       .catch(() => {
         setProducts([]);
-        setHasNext(false);
-        setHasPrev(false);
-        setError("We could not load products right now. Please try again.");
+        setError("We could not load products right now.");
       })
       .finally(() => setLoading(false));
   }, [page, debouncedSearch, category, price, availability, ordering]);
 
-  function clearFilters() {
-    setSearch("");
-    setCategory("");
-    setPrice([0, 500]);
-    setAvailability("all");
-    setOrdering("-created_at");
-    setPage(1);
-  }
+ 
+  return (
+    <PageReveal className="mx-auto max-w-7xl px-4 pb-28 pt-10 lg:px-10">
+      <div className="sticky top-[92px] z-40 border-b border-[#F1E5E5] bg-white/70 backdrop-blur-xl">
+        <div className="flex gap-2 overflow-x-auto px-4 py-3">
 
-  const filterControls = (
-    <div className="space-y-4">
-      <label className="block">
-        <span className="mb-2 block text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Search</span>
-        <input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Dress, abaya, heels..."
-          className="w-full rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--gold-deep)]"
-        />
-      </label>
+          <button
+            onClick={() => {
+              setCategory("");
+              setPage(1);
+            }}
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs border ${
+              category === ""
+                ? "bg-[#B78895] text-white"
+                : "border-[#F1E5E5]"
+            }`}
+          >
+            All
+          </button>
 
-      <label className="block">
-        <span className="mb-2 block text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Category</span>
-        <select
-          value={category}
-          onChange={(event) => {
-            setCategory(event.target.value);
-            setPage(1);
-          }}
-          className="w-full rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--gold-deep)]"
-        >
-          <option value="">All categories</option>
-          {commerceCategories.map((item, index) => (
-            <option key={`${item.slug}-${index}`} value={item.slug}>
-              {item.name}
-            </option>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => {
+                setCategory(cat.slug);
+                setPage(1);
+              }}
+              className={`whitespace-nowrap rounded-full px-4 py-2 text-xs border ${
+                category === cat.slug
+                  ? "bg-[#B78895] text-white"
+                  : "border-[#F1E5E5]"
+              }`}
+            >
+              {cat.name}
+            </button>
           ))}
-        </select>
-      </label>
-
-      <div>
-        <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Price range</p>
-        <input
-          type="range"
-          min={0}
-          max={500}
-          value={price[1]}
-          onChange={(event) => {
-            setPrice([price[0], Number(event.target.value)]);
-            setPage(1);
-          }}
-          className="mt-2 w-full accent-[#b78895]"
-          aria-label="Maximum price"
-        />
-        <p className="text-sm text-[var(--muted)]">${price[0]} - ${price[1]}</p>
+        </div>
       </div>
 
-      <label className="block">
-        <span className="mb-2 block text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Availability</span>
-        <select
-          value={availability}
-          onChange={(event) => {
-            setAvailability(event.target.value);
-            setPage(1);
-          }}
-          className="w-full rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--gold-deep)]"
-        >
-          <option value="all">All</option>
-          <option value="in_stock">In stock</option>
-          <option value="sold_out">Sold out</option>
-        </select>
-      </label>
-
-      <label className="block">
-        <span className="mb-2 block text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Sort by</span>
-        <select
-          value={ordering}
-          onChange={(event) => {
-            setOrdering(event.target.value);
-            setPage(1);
-          }}
-          className="w-full rounded-[18px] border border-[rgba(143,108,29,0.16)] bg-white/72 px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--gold-deep)]"
-        >
-          <option value="-created_at">Newest</option>
-          <option value="price">Price low to high</option>
-          <option value="-price">Price high to low</option>
-        </select>
-      </label>
-
+      {/* ======================
+          MOBILE FILTER BUTTON
+      ====================== */}
       <button
-        type="button"
-        onClick={clearFilters}
-        className="w-full rounded-full border border-[rgba(143,108,29,0.18)] px-4 py-3 text-sm transition hover:text-[var(--gold-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--gold-deep)]"
-      >
-        Clear filters
-      </button>
-    </div>
-  );
-
-  return (
-    <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-10">
-      <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
-        <p className="text-xs uppercase tracking-[0.24em] text-[var(--gold-deep)] sm:tracking-[0.36em]">
-          The collection
-        </p>
-        <h1 className="section-heading mt-4 text-4xl sm:text-5xl">
-          Discover your next favorite piece.
-        </h1>
-      </section>
-
-      <button
-        type="button"
         onClick={() => setOpenFilters(true)}
-        className="gold-button mt-4 w-full rounded-full py-3 lg:hidden"
+        className="mt-6 w-full rounded-full bg-[#B78895] py-3 text-white lg:hidden"
       >
-        Filters & Sorting
+        Filters
       </button>
 
-      <section className="mt-8 grid gap-8 lg:grid-cols-[320px,1fr]">
-        <aside className="luxury-card hidden h-fit rounded-[34px] p-5 lg:block">
-          <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">Filters</p>
-          <div className="mt-5">{filterControls}</div>
+      {/* ======================
+          MAIN LAYOUT
+      ====================== */}
+      <section className="mt-10 grid gap-10 lg:grid-cols-[280px,1fr]">
+
+        {/* SIDEBAR */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-32 rounded-3xl border border-[#F1E5E5] bg-white p-6">
+           
+          </div>
         </aside>
 
+        {/* PRODUCTS */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
           {loading ? (
-            Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="luxury-card h-[480px] animate-pulse rounded-[28px] bg-white/70" />
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-[420px] animate-pulse rounded-2xl bg-[#F6EFEA]" />
             ))
           ) : error ? (
-            <div className="luxury-card rounded-[28px] p-8 text-sm text-[var(--muted)] sm:col-span-2 lg:col-span-3">
+            <div className="col-span-full text-center text-sm text-red-500">
               {error}
             </div>
           ) : products.length === 0 ? (
-            <div className="luxury-card rounded-[28px] p-8 text-sm text-[var(--muted)] sm:col-span-2 lg:col-span-3">
-              No products found. Try clearing filters or searching another style.
+            <div className="col-span-full text-center text-sm text-[#6B5B5B]">
+              No products found
             </div>
           ) : (
-            products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            products.map((p) => (
+              <ProductCard key={p.id} product={p} />
             ))
           )}
+
         </div>
       </section>
 
-      <div className="mt-10 flex justify-center gap-4">
+      {/* ======================
+          PAGINATION
+      ====================== */}
+      <div className="mt-14 flex items-center justify-center gap-4">
         <button
-          type="button"
           disabled={!hasPrev}
-          onClick={() => setPage((current) => Math.max(1, current - 1))}
-          className="rounded-full border px-5 py-3 disabled:cursor-not-allowed disabled:opacity-40"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          className="rounded-full border px-5 py-2 disabled:opacity-40"
         >
-          Previous
+          Prev
         </button>
+
+        <div className="text-sm">Page {page}</div>
+
         <button
-          type="button"
           disabled={!hasNext}
-          onClick={() => setPage((current) => current + 1)}
-          className="gold-button rounded-full px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => setPage((p) => p + 1)}
+          className="rounded-full bg-[#B78895] px-5 py-2 text-white"
         >
           Next
         </button>
       </div>
 
-      {openFilters ? (
-        <div className="fixed inset-0 z-50 bg-black/40">
-          <button
-            type="button"
-            className="absolute inset-0 cursor-default"
-            aria-label="Close filters"
-            onClick={() => setOpenFilters(false)}
-          />
-          <div className="absolute right-0 top-0 h-full w-[88%] max-w-sm overflow-y-auto bg-white p-6 shadow-2xl">
-            <button
-              type="button"
-              onClick={() => setOpenFilters(false)}
-              className="mb-6 text-sm text-gray-500"
-            >
-              Close
-            </button>
-            {filterControls}
-            <button
-              type="button"
-              onClick={() => setOpenFilters(false)}
-              className="gold-button mt-5 w-full rounded-full py-3"
-            >
-              Apply
-            </button>
-          </div>
-        </div>
-      ) : null}
     </PageReveal>
   );
 }

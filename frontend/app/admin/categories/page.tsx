@@ -55,6 +55,7 @@ export default function CategoriesPage() {
   }, [searchTerm, categories]);
 
   const categoriesStats = useMemo(() => getCategoriesStats(categories, products), [categories, products]);
+  
 
   const handleDelete = async () => {
     const token = getStoredAccessToken();

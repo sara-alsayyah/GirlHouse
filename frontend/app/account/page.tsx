@@ -17,6 +17,7 @@ export default function AccountPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
 
 useEffect(() => {
   setIsMounted(true);
@@ -24,15 +25,21 @@ useEffect(() => {
   const [activeTab, setActiveTab] = useState<AccountTab>("overview");
 
   useEffect(() => {
-    if (!token) return;
-    void Promise.all([getProfile(token), getOrders(token), getAddresses(token)])
-      .then(([user, userOrders, userAddresses]) => {
-        setProfile(user);
-        setOrders(asArray(userOrders));
-        setAddresses(userAddresses);
-      })
-      .catch(() => setMessage("Login to view your account dashboard."));
-  }, [token]);
+  if (!token) return;
+
+  void Promise.all([
+    getProfile(token),
+    getOrders(token),
+    getAddresses(token),
+  ])
+    .then(([userData, userOrders, userAddresses]) => {
+      setUser(userData);
+      setProfile(userData);
+      setOrders(asArray(userOrders));
+      setAddresses(userAddresses);
+    })
+    .catch(() => setMessage("Login to view your account dashboard."));
+}, [token]);
 
   async function saveProfile() {
     if (!token || !profile) return;
@@ -48,11 +55,16 @@ useEffect(() => {
     { id: "orders", label: "Orders" },
   ];
 
-  return (
-    <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-10">
-      <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
-        <p className="text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">Account dashboard</p>
-        <h1 className="section-heading mt-4 text-5xl">Profile, addresses, and orders in one calm place.</h1>
+return (
+  <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-10">
+    <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
+      <p className="text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">
+        Account dashboard
+      </p>
+
+      <h1 className="section-heading mt-4 text-5xl">
+        Profile, addresses, and orders in one calm place.
+      </h1>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Orders</p>
@@ -71,11 +83,13 @@ useEffect(() => {
         </div>
       </section>
 
-      {!token ? (
-        <div className="luxury-card mt-8 rounded-[34px] p-10 text-center">
-          <p className="font-[var(--font-display)] text-3xl">Please login to access your account.</p>
-        </div>
-      ) : (
+     {!token ? (
+      <div className="luxury-card mt-8 rounded-[34px] p-10 text-center">
+        <p className="font-[var(--font-display)] text-3xl">
+          Please login to access your account.
+        </p>
+      </div>
+    ) : (
         <section className="mt-8 space-y-6">
           <div className="flex flex-wrap gap-3">
             {tabs.map((tab) => (

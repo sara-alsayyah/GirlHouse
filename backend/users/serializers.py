@@ -9,10 +9,22 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_admin = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone']
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'phone',
+            'is_admin',
+        ]
         read_only_fields = ['id', 'email']
+
+    def get_is_admin(self, obj):
+        return obj.is_staff or obj.is_superuser
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
     class Meta:
