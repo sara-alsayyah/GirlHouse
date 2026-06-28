@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/app/providers/StoreProvider";
 import { BrandLogo } from "@/app/components/BrandLogo";
 import { CategoryMegaMenu } from "@/app/components/CategoryMegaMenu";
@@ -14,6 +14,7 @@ import {
   SearchIcon,
   UserIcon,
 } from "@/app/components/icons";
+import { HeaderSearch } from "@/app/components/HeaderSearch";
 
 const rightNavigation = [
   { href: "/about", label: "من نحن" },
@@ -24,8 +25,24 @@ const rightNavigation = [
 ];
 
 export function SiteHeader() {
-  const { openWishlist, wishlistCount } = useStore();
+  const { openWishlist, wishlistCount, user } = useStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const router = useRouter();
+  function handleSearch(e: React.FormEvent) {
+  e.preventDefault();
+
+  const value = search.trim();
+
+  if (!value) return;
+
+  router.push(`/products?search=${encodeURIComponent(value)}`);
+
+  setSearch("");
+  setSearchOpen(false);
+}
+
   const pathname = usePathname();
 
   function closeMenus() {
@@ -66,22 +83,27 @@ export function SiteHeader() {
                 </Link>
 
                 <Link
-                  href="/account"
-                  onClick={closeMenus}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
-                  aria-label="Account"
-                >
-                  <UserIcon className="h-5 w-5 text-[#b78895]" />
-                </Link>
-
-                <Link
-                  href="/products"
-                  onClick={closeMenus}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
-                  aria-label="Search"
-                >
-                  <SearchIcon className="h-5 w-5 text-[#b78895]" />
-                </Link>
+  href={
+    !user
+      ? "/login"
+      : user.is_admin
+      ? "/admin"
+      : "/account"
+  }
+  onClick={closeMenus}
+  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
+  aria-label="Account"
+>
+  <UserIcon className="h-5 w-5 text-[#b78895]" />
+</Link>
+<button
+  type="button"
+  onClick={() => setSearchOpen((prev) => !prev)}
+  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
+  aria-label="Search"
+>
+  <SearchIcon className="h-5 w-5 text-[#b78895]" />
+</button>
 
                 <button
                   type="button"
@@ -168,6 +190,11 @@ export function SiteHeader() {
           </div>
         </div>
       </nav>
+     {searchOpen && (
+  <div className="fixed top-[90px] left-0 right-0 z-50 flex justify-center px-6">
+    <HeaderSearch />
+  </div>
+)}
 
       {isMobileMenuOpen && (
         <div className="mt-20 bg-white/95 border-t border-[rgba(166,122,122,0.08)] lg:hidden">

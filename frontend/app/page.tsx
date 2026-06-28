@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { asArray, getProducts, money, resolveMediaUrl } from "@/app/lib/api";
+import { asArray, getHeroSlides, getProducts, money, resolveMediaUrl } from "@/app/lib/api";
 import type { Product } from "@/app/lib/types";
 import { PageReveal } from "@/app/components/PageReveal";
 import {
@@ -12,7 +12,13 @@ import {
   ArrowUturnLeftIcon,
   StarIcon,
 } from "@heroicons/react/24/outline";
-import { refresh } from "next/cache";
+
+import { useStore } from "@/app/providers/StoreProvider";
+
+type HeroSlide = {
+  image: string;
+};
+
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -24,11 +30,10 @@ export default function HomePage() {
   }, []);
 
   const mostPopular = products.slice(0, 5);
-  const heroProduct = products[0];
 
   const featuredCategories = [
     { name: "فساتين",        nameEn: "Dresses",     slug: "dresses" },
-    { name: "عبايات",        nameEn: "Abayas",      slug: "abayas" },
+    { name: "عبايات",        nameEn: "Abaya",      slug: "abaya" },
     { name: "تنانير",   nameEn: "Skirts", slug: "skirts" },
     { name: " اطقم", nameEn: "Sets", slug: "sets" },
     { name: "وصل حديثاً",    nameEn: "New Arrivals", slug: "women" },
@@ -40,6 +45,26 @@ export default function HomePage() {
   { icon: ArrowUturnLeftIcon, ar: "إرجاع سهل", sub: "سياسة إرجاع مرنة" },
   { icon: StarIcon, ar: "جودة عالية", sub: "خامات مختارة بعناية" },
 ];
+
+
+const [slides, setSlides] = useState<HeroSlide[]>([]);
+const [current, setCurrent] = useState(0);
+useEffect(() => {
+  getHeroSlides()
+    .then(setSlides)
+    .catch(() => setSlides([]));
+}, []);
+useEffect(() => {
+  if (!slides.length) return;
+
+  const interval = setInterval(() => {
+    setCurrent((prev) => (prev + 1) % slides.length);
+  }, 10000);
+
+  return () => clearInterval(interval);
+}, [slides]);
+
+  const { toggleWishlist, isWishlisted } = useStore();
 
   return (
     <PageReveal className="page-shell pb-20">
@@ -58,14 +83,16 @@ export default function HomePage() {
 
           {/* product image */}
           
-            <div
-          className="absolute inset-0 bg-cover bg-center"
-           style={{
-                backgroundImage: "url('/Hero.png')",
-                backgroundSize: "cover",
-                backgroundPosition: "center right",
-              }}
-            />
+    <div
+  className="absolute inset-0 bg-cover bg-center transition-all duration-700"
+  style={{
+    backgroundImage: slides[current]?.image
+      ? `url(${slides[current].image})`
+      : "url('/Hero.png')",
+    backgroundSize: "cover",
+    backgroundPosition: "center right",
+  }}
+/>
         
 
           {/* left dark fade */}
@@ -119,14 +146,15 @@ export default function HomePage() {
 
           {/* slide dots */}
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-            {[0, 1, 2].map((i) => (
+           {(slides.length ? slides : [0, 1, 2]).map((_, i) => (
               <span
                 key={i}
                 className="block rounded-full transition-all"
                 style={{
-                  width: i === 0 ? 28 : 8,
+                 
                   height: 8,
-                  background: i === 0 ? "#d4b080" : "rgba(255,255,255,0.4)",
+                  background: i === current ? "#d4b080" : "rgba(255,255,255,0.4)",
+                  width: i === current ? 28 : 8,
                 }}
               />
             ))}
@@ -134,7 +162,11 @@ export default function HomePage() {
 
           {/* slide counter bottom-left */}
           <p className="absolute bottom-7 left-8 z-10 text-xs text-white/60 tracking-widest">
-            01 ── 03
+           {slides.length
+  ? `${String(current + 1).padStart(2, "0")} ── ${String(
+      slides.length
+    ).padStart(2, "0")}`
+  : "01 ── 03"}
           </p>
         </div>
       </section>
@@ -255,10 +287,33 @@ export default function HomePage() {
                     ) : (
                       <div className="h-full w-full" />
                     )}
-                    {/* wishlist */}
-                    <button className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#b78895] text-lg hover:bg-white transition">
-                      ♡
-                    </button>
+                   {/* wishlist */}
+{product && (
+<button
+  type="button"
+  onClick={(e) => {
+    e.preventDefault(); 
+    e.stopPropagation();
+    void toggleWishlist(product);
+  }}
+  className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 transition hover:bg-white"
+  aria-label={
+    isWishlisted(product.id)
+      ? "Remove from wishlist"
+      : "Add to wishlist"
+  }
+>
+  <span
+    className={`text-lg transition ${
+      isWishlisted(product.id)
+        ? "text-[#d46a8c]"
+        : "text-[#b78895]"
+    }`}
+  >
+    {isWishlisted(product.id) ? "♥" : "♡"}
+  </span>
+</button>
+)}
                   </div>
 
                   {/* info */}
