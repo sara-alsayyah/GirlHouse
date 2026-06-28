@@ -2,7 +2,6 @@
 
 import { DollarSign, Package, ShoppingBag, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { AdminContainer } from "@/app/admin/components/AdminContainer";
 import { StatCard } from "@/app/admin/components/StatCard";
@@ -22,25 +21,17 @@ export default function AdminDashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-const router = useRouter();
 
-const [token, setToken] = useState<string | null>(null);
+ useEffect(() => {
+    const token = getStoredAccessToken();
 
-useEffect(() => {
-  setToken(getStoredAccessToken());
-}, []);
+    if (!token) return;
 
-useEffect(() => {
-  if (!token) {
-    router.replace("/login");
-    return;
-  }
-
-  adminGetDashboard(token)
-    .then(setDashboardData)
-    .catch((error) => setError(getApiErrorMessage(error)))
-    .finally(() => setLoading(false));
-}, [token, router]);
+    adminGetDashboard(token)
+      .then(setDashboardData)
+      .catch((error) => setError(getApiErrorMessage(error)))
+      .finally(() => setLoading(false));
+  }, []);
 
   const statIcons = [
     <DollarSign size={24} key="sales" />,
