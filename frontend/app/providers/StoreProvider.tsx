@@ -162,7 +162,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return raw ? JSON.parse(raw) : null;
   });
 
-  const isAdmin = !!user?.is_admin;
+  const isAdmin = !!user && (user.is_admin || (user as any).is_staff || (user as any).is_superuser);
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [savedForLater, setSavedForLater] = useState<CartItem[]>(() =>
@@ -228,12 +228,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   /* ================= LOGIN TOKEN ================= */
 
-  async function fetchUser(access: string) {
-    try {
-      const res = await fetch("/api/profile/", {
+async function fetchUser(access: string) {
+  try {
+      const res = await fetch("http://localhost:8001/api/users/profile/", {
         headers: { Authorization: `Bearer ${access}` },
       });
-      const data = await res.json();
+
+    if (!res.ok) {
+      setUser(null);
+      return;
+    }
+
+    const data = await res.json();
 
       setUser(data);
       localStorage.setItem("user", JSON.stringify(data));
