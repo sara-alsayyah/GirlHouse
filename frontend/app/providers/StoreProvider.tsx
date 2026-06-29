@@ -267,11 +267,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   /* ================= VALUE ================= */
 
-  async function toggleWishlist(product: Product) {
+async function toggleWishlist(product: Product) {
   const token = localStorage.getItem("access");
-  if (!token) return;
 
-  const exists = wishlistItems.some((i) => i.product.id === product.id);
+  if (!token) {
+    setStatusMessage("Please login to add items to wishlist");
+
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1200);
+
+    return;
+  }
+
+  const exists = wishlistItems.some(
+    (i) => i.product.id === product.id
+  );
 
   try {
     if (exists) {

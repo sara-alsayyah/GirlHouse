@@ -117,12 +117,11 @@ export function getApiErrorMessage(error: unknown) {
 
   return fieldMessages.length ? fieldMessages.join(" ") : "Something went wrong. Please try again.";
 }
-
 export function resolveMediaUrl(image?: string | null) {
   if (!image) return null;
   if (image.startsWith("http")) return image;
-  const origin = API_BASE.replace(/\/api$/, "");
-  return `${origin}${image}`;
+  const origin = API_BASE.replace(/\/api$/, ""); 
+  return `${origin}${image.startsWith("/") ? image : `/${image}`}`;
 }
 
 export function money(value: string | number) {
@@ -154,13 +153,11 @@ export async function getReviews(productId: number) {
   return apiFetch<Review[]>(`/products/${productId}/reviews/`);
 }
 
-export async function getWishlist(token?: string | null) {
-  return apiFetch<WishlistItem[]>("/products/wishlist/", {
-    token: token ?? getStoredAccessToken(),
-  });
+export async function getWishlist(token: string) {
+  return apiFetch<WishlistItem[]>("/products/wishlist/", { token });
 }
 
-export async function addWishlistItem(token: string | null, productId: number) {
+export async function addWishlistItem(token: string, productId: number) {
   return apiFetch<{ message: string }>("/products/wishlist/add/", {
     method: "POST",
     token,
@@ -168,14 +165,11 @@ export async function addWishlistItem(token: string | null, productId: number) {
   });
 }
 
-export async function removeWishlistItem(token: string | null, productId: number) {
-  return apiFetch<{ message: string }>(
-    `/products/wishlist/remove/${productId}/`,
-    {
-      method: "DELETE",
-      token,
-    },
-  );
+export async function removeWishlistItem(token: string, productId: number) {
+  return apiFetch<{ message: string }>(`/products/wishlist/remove/${productId}/`, {
+    method: "DELETE",
+    token,
+  });
 }
 
 export async function login(email: string, password: string) {
@@ -312,12 +306,11 @@ export async function sendContact(payload: {
 // =======================
 // ADMIN PRODUCTS API
 // =======================
-export async function getHeroSlides() {
-  const res = await fetch("/api/dashboard/hero-slides/");
-  if (!res.ok) throw new Error("Failed to load hero slides");
-  return res.json();
-}
 
+export const getHeroSlides = async () => {
+  const res = await fetch(`${API_BASE}/dashboard/hero-slides`);
+  return res.json();
+};
 export async function adminGetProducts(token: string) {
   return apiFetch<PaginatedResponse<AdminProduct> | AdminProduct[]>(
     "/admin/products/products/",

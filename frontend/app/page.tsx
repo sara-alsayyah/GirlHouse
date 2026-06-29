@@ -16,7 +16,7 @@ import {
 import { useStore } from "@/app/providers/StoreProvider";
 
 type HeroSlide = {
-  image: string;
+  image?: string;
 };
 
 
@@ -58,13 +58,17 @@ useEffect(() => {
   if (!slides.length) return;
 
   const interval = setInterval(() => {
-    setCurrent((prev) => (prev + 1) % slides.length);
+    setCurrent((prev) => {
+      if (slides.length === 0) return 0;
+      return (prev + 1) % slides.length;
+    });
   }, 10000);
 
   return () => clearInterval(interval);
-}, [slides]);
+}, [slides.length]);
 
   const { toggleWishlist, isWishlisted } = useStore();
+const currentSlide = slides?.[current] ?? null;
 
   return (
     <PageReveal className="page-shell pb-20">
@@ -83,12 +87,14 @@ useEffect(() => {
 
           {/* product image */}
           
-    <div
+
+<div
+  key={currentSlide?.image}
   className="absolute inset-0 bg-cover bg-center transition-all duration-700"
   style={{
-    backgroundImage: slides[current]?.image
-      ? `url(${slides[current].image})`
-      : "url('/Hero.png')",
+backgroundImage: currentSlide?.image
+  ? `url(${resolveMediaUrl(currentSlide.image)})`
+  : "url('/Hero.png')",
     backgroundSize: "cover",
     backgroundPosition: "center right",
   }}
@@ -146,7 +152,7 @@ useEffect(() => {
 
           {/* slide dots */}
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-           {(slides.length ? slides : [0, 1, 2]).map((_, i) => (
+           {Array.from({ length: slides.length || 3 }).map((_, i) => (
               <span
                 key={i}
                 className="block rounded-full transition-all"
@@ -259,89 +265,88 @@ useEffect(() => {
             <span className="h-px w-16 bg-[#c9a96e]" />
           </div>
 
-          <div className="grid gap-5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-            {(mostPopular.length ? mostPopular : Array(5).fill(null)).map(
-              (product: Product | null, i) => (
-                <motion.div
-                  key={product?.id ?? i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08, duration: 0.5 }}
-                  className="group rounded-2xl overflow-hidden bg-white"
-                  style={{ boxShadow: "0 2px 16px rgba(160,100,110,.08)" }}
-                >
-                  {/* image area */}
-                  <div
-                    className="relative overflow-hidden"
-                    style={{
-                      aspectRatio: "3/4",
-                      background: "linear-gradient(135deg,#f0e0e4,#ddb5bc)",
-                    }}
-                  >
-                    {product?.image ? (
-                      <img
-                        src={resolveMediaUrl(product.image) ?? ""}
-                        alt={product.name}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="h-full w-full" />
-                    )}
-                   {/* wishlist */}
-{product && (
-<button
-  type="button"
-  onClick={(e) => {
-    e.preventDefault(); 
-    e.stopPropagation();
-    void toggleWishlist(product);
-  }}
-  className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 transition hover:bg-white"
-  aria-label={
-    isWishlisted(product.id)
-      ? "Remove from wishlist"
-      : "Add to wishlist"
-  }
->
-  <span
-    className={`text-lg transition ${
-      isWishlisted(product.id)
-        ? "text-[#d46a8c]"
-        : "text-[#b78895]"
-    }`}
-  >
-    {isWishlisted(product.id) ? "♥" : "♡"}
-  </span>
-</button>
-)}
-                  </div>
+       <div className="grid gap-5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+  {(mostPopular.length ? mostPopular : Array(5).fill(null)).map(
+    (product, i) => {
+      const wishlisted = product ? isWishlisted(product.id) : false;
 
-                  {/* info */}
-                  <div className="p-3" dir="rtl">
-                    {product && (
-                      <p className="text-[10px] uppercase tracking-widest text-[#b09098]">
-                        {product.category?.name}
-                      </p>
-                    )}
-                    <Link
-                      href={product ? `/products/${product.slug}` : "#"}
-                      className="mt-1 block text-sm font-medium text-[#5a3a42] hover:text-[#c9a96e] transition line-clamp-1"
-                    >
-                      {product?.name ?? "—"}
-                    </Link>
-                    <div className="mt-2 flex items-center justify-between">
-                      <p className="text-sm font-semibold text-[#c9a96e]">
-                        {product ? money(product.price) : "—"}
-                      </p>
-                      <span className="text-[10px] text-[#c9a96e]">
-                        ★★★★★
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              )
+      return (
+        <motion.div
+          key={product?.id ?? `fallback-${i}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.08, duration: 0.5 }}
+          className="group rounded-2xl overflow-hidden bg-white"
+        >
+          {/* image area */}
+          <div
+            className="relative overflow-hidden"
+            style={{
+              aspectRatio: "3/4",
+              background: "linear-gradient(135deg,#f0e0e4,#ddb5bc)",
+            }}
+          >
+            {product?.image ? (
+              <img
+                src={resolveMediaUrl(product.image) ?? ""}
+                alt={product.name ?? ""}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div className="h-full w-full" />
             )}
+
+       {product && (
+  <button
+    type="button"
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!product) return;
+      void toggleWishlist(product);
+    }}
+    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 transition hover:bg-white"
+  >
+    <span
+      className={`text-lg transition ${
+        wishlisted ? "text-[#d46a8c]" : "text-[#b78895]"
+      }`}
+    >
+      {wishlisted ? "♥" : "♡"}
+    </span>
+  </button>
+)}
           </div>
+
+          {/* info */}
+          <div className="p-3" dir="rtl">
+            {product && (
+              <p className="text-[10px] uppercase tracking-widest text-[#b09098]">
+                {product.category?.name}
+              </p>
+            )}
+
+            <Link
+              href={product ? `/products/${product.slug}` : "#"}
+              className="mt-1 block text-sm font-medium text-[#5a3a42] hover:text-[#c9a96e] transition line-clamp-1"
+            >
+              {product?.name ?? "—"}
+            </Link>
+
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-sm font-semibold text-[#c9a96e]">
+                {product ? money(product.price) : "—"}
+              </p>
+
+              <span className="text-[10px] text-[#c9a96e]">★★★★★</span>
+            </div>
+          </div>
+        </motion.div>
+      );
+    }
+  )}
+</div>
         </div>
       </section>
 
@@ -388,9 +393,9 @@ useEffect(() => {
 
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7">
           {(products.length ? products.slice(0, 7) : Array(7).fill(null)).map(
-            (product: Product | null, i) => (
+            (product: Product | null | undefined, i) => (
               <div
-                key={product?.id ?? i}
+               key={product?.id ?? `fallback-${i}`}
                 className="relative overflow-hidden rounded-xl"
                 style={{
                   aspectRatio: "1",

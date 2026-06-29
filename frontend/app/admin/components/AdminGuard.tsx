@@ -19,7 +19,6 @@ export default function AdminGuard({
     return;
   }
 
-  // Wait for user to load before making a decision
   if (!user) return;
 
   if (!user.is_admin) {

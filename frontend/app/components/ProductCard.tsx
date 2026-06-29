@@ -12,9 +12,11 @@ export function ProductCard({
   product,
   featured = false,
 }: {
-  product: Product;
+  product: Product | null | undefined;
   featured?: boolean;
 }) {
+  if (!product) return null;
+
   const {
     addProductToCart,
     toggleWishlist,
@@ -27,18 +29,12 @@ export function ProductCard({
 
   const [loading, setLoading] = useState(false);
 
+  const wishlisted = isWishlisted(product.id);
+
   const handleQuickAdd = async () => {
     try {
-      console.log("🛒 Quick Add:", product.name);
-
-      if (!addProductToCart) {
-        console.error("addProductToCart is missing from store");
-        return;
-      }
-
       setLoading(true);
-      await addProductToCart(product, imageRef.current);
-
+      await addProductToCart(product, imageRef.current ?? undefined);
     } catch (err) {
       console.error("Quick add failed:", err);
     } finally {
@@ -48,15 +44,7 @@ export function ProductCard({
 
   const handleQuickView = () => {
     try {
-      console.log("👁 Quick View:", product.name);
-
-      if (!setQuickViewProduct) {
-        console.error("setQuickViewProduct is missing from store");
-        return;
-      }
-
       setQuickViewProduct(product);
-
     } catch (err) {
       console.error("Quick view failed:", err);
     }
@@ -64,13 +52,7 @@ export function ProductCard({
 
   const handleWishlist = async () => {
     try {
-      if (!toggleWishlist) {
-        console.error("toggleWishlist is missing from store");
-        return;
-      }
-
       await toggleWishlist(product);
-
     } catch (err) {
       console.error("Wishlist error:", err);
     }
@@ -115,7 +97,7 @@ export function ProductCard({
             type="button"
             onClick={handleWishlist}
             className={`rounded-full border p-2 backdrop-blur-md transition ${
-              isWishlisted(product.id)
+              wishlisted
                 ? "border-[rgba(212,175,55,0.4)] bg-[rgba(255,250,236,0.92)] text-[var(--gold-deep)]"
                 : "border-white/40 bg-white/54"
             }`}

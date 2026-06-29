@@ -12,7 +12,7 @@ from .models import HeroSlide
 from .serializers import HeroSlideSerializer
 
 
-class HeroSlideAPIView(APIView):
+class HeroSlidesAPIView(APIView):
     permission_classes = []
 
     def get(self, request):
