@@ -90,10 +90,10 @@ export function ProductsClientPage({
 
  
   return (
-    <PageReveal className="mx-auto max-w-7xl px-6 pt-6 pb-28 lg:px-10">
+    <PageReveal className="mx-auto max-w-7xl px-6 pt-2 pb-28 lg:px-10">
 
   {/* HERO */}
-  <section className="relative mt-16 lg:mt-24 h-[500px] overflow-hidden">
+  <section className="relative mt-16 lg:mt-24 h-[600px] overflow-hidden">
     <img
       src="http://127.0.0.1:8001/media/products/hero.png"
       alt="Girl House Collection"
