@@ -19,8 +19,6 @@ export default function AdminGuard({
       router.replace("/login");
       return;
     }
-
-  // Wait for user to load before making a decision
   if (!user) return;
 
     if (!isAdmin) {

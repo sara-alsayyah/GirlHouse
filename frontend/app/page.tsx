@@ -71,7 +71,7 @@ useEffect(() => {
 const currentSlide = slides?.[current] ?? null;
 
   return (
-    <PageReveal className="page-shell pb-20">
+    <PageReveal className="page-shell pb-2">
 
       {/* ─── HERO ─────────────────────────────────────────────── */}
       <section className="relative w-full">
@@ -178,7 +178,7 @@ backgroundImage: currentSlide?.image
       </section>
 
       {/* ─── BROWSE CATEGORIES ────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-10">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-10 ">
         {/* heading with gold lines */}
         <div className="mb-10 flex items-center justify-center gap-4">
           <span className="h-px w-16 bg-[#c9a96e]" />
@@ -196,7 +196,7 @@ backgroundImage: currentSlide?.image
             <Link
               key={cat.slug + i}
               href={`/products?category=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl"
+              className="group relative overflow-hidden "
               style={{ aspectRatio: "3/4" }}
             >
               {/* placeholder gradient bg — replaced by product image if available */}
@@ -251,7 +251,7 @@ backgroundImage: currentSlide?.image
       {/* ─── MOST POPULAR ─────────────────────────────────────── */}
       <section
         className="py-14"
-        style={{ background: "linear-gradient(180deg,#fdf8f6 0%,#f5ece8 100%)" }}
+        style={{background: "radial-gradient(circle at top, #f3c85f1a, #0000 30%)" }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="mb-10 flex items-center justify-center gap-4">
@@ -276,7 +276,7 @@ backgroundImage: currentSlide?.image
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08, duration: 0.5 }}
-          className="group rounded-2xl overflow-hidden bg-white"
+          className="group overflow-hidden bg-white"
         >
           {/* image area */}
           <div
@@ -351,8 +351,8 @@ backgroundImage: currentSlide?.image
       </section>
 
       {/* ─── TRUST BADGES ─────────────────────────────────────── */}
-      <section style={{ background: "#f0e4e8" }}>
-        <div className="mx-auto max-w-7xl px-6 py-10">
+      <section style={{ background: "#7e525d" }}>
+        <div className="mx-auto max-w-7xl px-4 py-4">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {trustBadges.map((b) => {
   const Icon = b.icon;
@@ -362,13 +362,13 @@ backgroundImage: currentSlide?.image
       key={b.ar}
       className="flex flex-col items-center gap-2 text-center"
     >
-      <Icon className="h-6 w-6 text-[#b78895]" />
+      <Icon className="h-6 w-6 text-[#f3c85f]" />
 
-      <p className="text-sm font-medium text-[#5a3a42]" dir="rtl">
+      <p className="text-sm font-medium text-[#e0cfd3]" dir="rtl">
         {b.ar}
       </p>
 
-      <p className="text-xs text-[#9a7882]" dir="rtl">
+      <p className="text-xs text-[#e4d0d6]" dir="rtl">
         {b.sub}
       </p>
     </div>
@@ -379,8 +379,8 @@ backgroundImage: currentSlide?.image
       </section>
 
       {/* ─── INSTAGRAM GRID ───────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-10">
-        <div className="mb-10 flex items-center justify-center gap-4">
+      <section className="mx-auto max-w-5xl px-4 py-4 sm:px-2 lg:px-10">
+        <div className="mb-10 flex items-center justify-center gap-8">
           <span className="h-px w-16 bg-[#c9a96e]" />
           <p
             className="text-center text-sm tracking-[0.3em] text-[#9a7060]"
@@ -396,7 +396,7 @@ backgroundImage: currentSlide?.image
             (product: Product | null | undefined, i) => (
               <div
                key={product?.id ?? `fallback-${i}`}
-                className="relative overflow-hidden rounded-xl"
+                className="relative overflow-hidden"
                 style={{
                   aspectRatio: "1",
                   background: "linear-gradient(135deg,#e8d0d4,#c9a0a8)",

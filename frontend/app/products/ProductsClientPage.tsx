@@ -90,16 +90,42 @@ export function ProductsClientPage({
 
  
   return (
-    <PageReveal className="mx-auto max-w-7xl px-4 pb-28 pt-10 lg:px-10">
+    <PageReveal className="mx-auto max-w-7xl px-6 pt-6 pb-28 lg:px-10">
+
+  {/* HERO */}
+  <section className="relative mt-16 lg:mt-24 h-[500px] overflow-hidden">
+    <img
+      src="http://127.0.0.1:8001/media/products/hero.png"
+      alt="Girl House Collection"
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+
+    <div className="absolute inset-0 bg-black/30" />
+
+    <div className="relative z-10 flex h-full items-center justify-center">
+      <div className="text-center text-white">
+
+        <h1 className="text-6xl font-light">
+         NEW COLLECTION
+        </h1>
+
+        <p className="mt-4 text-lg">
+          حيث تلتقي الأناقة بالاحتشام
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* Rest of page */}
       <div className="sticky top-[92px] z-40 border-b border-[#F1E5E5] bg-white/70 backdrop-blur-xl">
-        <div className="flex gap-2 overflow-x-auto px-4 py-3">
+        <div className="flex gap-2 justify-center overflow-x-auto px-4 py-3">
 
           <button
             onClick={() => {
               setCategory("");
               setPage(1);
             }}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs border ${
+            className={`whitespace-nowrap px-4 py-2 text-xs border ${
               category === ""
                 ? "bg-[#B78895] text-white"
                 : "border-[#F1E5E5]"
@@ -115,7 +141,7 @@ export function ProductsClientPage({
                 setCategory(cat.slug);
                 setPage(1);
               }}
-              className={`whitespace-nowrap rounded-full px-4 py-2 text-xs border ${
+              className={`whitespace-nowrap  px-4 py-2 text-xs border ${
                 category === cat.slug
                   ? "bg-[#B78895] text-white"
                   : "border-[#F1E5E5]"

@@ -16,40 +16,10 @@ const trustItems = [
 
 export function SiteFooter() {
   return (
-<footer className="mt-24">
-  {/* Trust badges bar */}
-  <div className="bg-[#f9f0f2] border-t border-[rgba(183,136,149,0.15)]">
-    <div className="mx-auto max-w-7xl px-6 py-8">
-      <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-
-        {trustItems.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <div
-              key={item.title}
-              className="flex flex-col items-center gap-2 text-center"
-            >
-              <Icon className="h-6 w-6 text-[#b78895]" />
-
-              <p className="text-sm font-medium text-[#5a3a42]">
-                {item.title}
-              </p>
-
-              <p className="text-xs text-[#9a7a82]">
-                {item.sub}
-              </p>
-            </div>
-          );
-        })}
-
-      </div>
-    </div>
-  </div>
-
+<footer className="mt-10">
       {/* Main footer */}
-      <div className="relative bg-[#6f4650] text-white overflow-hidden">
-         <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_top,#f3c85f,transparent_60%)]" />
+      <div className="relative bg-[#7e525d] text-white overflow-hidden">
+         <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_top,#f3c85f,transparent_30%)]" />
 
   <div className="relative mx-auto max-w-7xl px-6 py-20">
 
@@ -125,18 +95,12 @@ export function SiteFooter() {
             {/* Col 4 — Newsletter */}
             <div dir="rtl">
               <h3 className="mb-5 text-sm font-medium uppercase tracking-[0.25em] text-white/50">
-                اشترك في نشرتنا البريدية
+                Join Us On Our Whatsapp Group
               </h3>
               <p className="mb-4 text-sm text-white/70">
                 لتكوني أول من يعلم بالمنتجات الجديدة والعروض الحصرية
               </p>
               <div className="flex overflow-hidden rounded-full bg-white/10 border border-white/20">
-                <input
-                  type="email"
-                  placeholder="بريدك الإلكتروني"
-                  dir="rtl"
-                  className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none"
-                />
                 <button
                   className="px-5 py-3 text-sm font-medium text-white shrink-0 transition hover:opacity-90"
                   style={{ background: "linear-gradient(135deg, #f3c85f, #d4a63f)" }}

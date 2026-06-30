@@ -62,9 +62,9 @@ export function ProductCard({
     <motion.article
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className={`product-glow luxury-card group flex h-full flex-col overflow-hidden rounded-[14px] ${
-        featured ? "md:flex-row" : ""
-      }`}
+      className={`product-glow luxury-card group flex h-full flex-col overflow-hidden rounded-none ${
+  featured ? "md:flex-row" : ""
+}`}
     >
       {/* IMAGE */}
       <div className={`relative overflow-hidden ${featured ? "md:w-[52%]" : ""}`}>
@@ -86,32 +86,31 @@ export function ProductCard({
         )}
 
         {/* CATEGORY */}
-        <div className="absolute left-4 top-4 rounded-full border border-white/40 bg-white/54 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--gold-deep)] backdrop-blur-sm">
+        <div className="absolute left-4 top-4 rounded-full border border-white/40 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--gold-deep)]">
           {product.category?.name ?? "Curated"}
         </div>
 
         {/* ACTIONS */}
         <div className="absolute right-4 top-4 flex flex-col gap-2">
 
+     <button
+  type="button"
+  onClick={handleWishlist}
+  className="p-2 transition hover:scale-110"
+>
+  <HeartIcon
+    className={`h-6 w-6 ${
+      wishlisted ? "fill-red-500 text-red-500" : "text-[#b78895]"
+    }`}
+  />
+</button>
           <button
-            type="button"
-            onClick={handleWishlist}
-            className={`rounded-full border p-2 backdrop-blur-md transition ${
-              wishlisted
-                ? "border-[rgba(212,175,55,0.4)] bg-[rgba(255,250,236,0.92)] text-[var(--gold-deep)]"
-                : "border-white/40 bg-white/54"
-            }`}
-          >
-            <HeartIcon className="h-4 w-4" />
-          </button>
-
-          <button
-            type="button"
-            onClick={handleQuickView}
-            className="rounded-full border border-white/40 bg-white/54 p-2 backdrop-blur-md"
-          >
-            <EyeIcon className="h-4 w-4" />
-          </button>
+  type="button"
+  onClick={handleQuickView}
+  className="p-2 transition hover:scale-110"
+>
+  <EyeIcon className="h-5 w-5" />
+</button>
 
         </div>
       </div>
@@ -169,7 +168,7 @@ export function ProductCard({
 
           <Link
             href={`/products/${product.slug}`}
-            className="rounded-full border border-[rgba(143,108,29,0.18)] px-4 py-2 text-sm hover:text-[var(--gold-deep)]"
+            className=" border border-[rgba(143,108,29,0.18)] px-4 py-2 text-sm hover:text-[var(--gold-deep)]"
           >
             Details
           </Link>
@@ -179,7 +178,7 @@ export function ProductCard({
             whileTap={{ scale: 0.98 }}
             onClick={handleQuickAdd}
             disabled={loading}
-            className="gold-button rounded-full px-5 py-3 text-sm uppercase tracking-[0.16em]"
+            className="gold-button px-5 py-3 text-sm uppercase tracking-[0.16em]"
           >
             {loading ? "Adding..." : "Quick add"}
           </motion.button>
