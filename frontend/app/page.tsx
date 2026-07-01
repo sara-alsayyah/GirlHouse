@@ -71,7 +71,7 @@ useEffect(() => {
 const currentSlide = slides?.[current] ?? null;
 
   return (
-    <PageReveal className="page-shell pb-2">
+    <PageReveal className="page-shell pb-2 ">
 
       {/* ─── HERO ─────────────────────────────────────────────── */}
       <section className="relative w-full">

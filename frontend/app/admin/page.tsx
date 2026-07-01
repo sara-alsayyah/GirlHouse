@@ -42,11 +42,11 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminContainer>
-      <div className="space-y-8">
+      <div className="space-y-4">
         {/* Banner */}
         <div
-          className="relative overflow-hidden rounded-[30px] p-10 shadow-[0_20px_60px_rgba(183,136,149,0.15)]
-  bg-[url('/background.jpeg')] bg-cover bg-center bg-no-repeat"
+          className="relative overflow-hidden rounded-[30px] p-10
+  bg-[url('/background.jpeg')] bg-[length:100%] bg-center bg-no-repeat"
         >
           {/* Gradient overlay (left → right fade) */}
           <div
@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
           <div className="relative max-w-lg">
             <p className="text-lg text-white/90">Welcome back,</p>
 
-            <h1 className="mt-2 text-5xl font-semibold text-white">Admin ✨</h1>
+            <h1 className="mt-2 text-5xl font-semibold text-white">Admin </h1>
 
             <p className="mt-4 text-white/80">
               Here&apos;s what&apos;s happening with your store today.

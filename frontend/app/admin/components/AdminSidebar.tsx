@@ -64,17 +64,17 @@ export function AdminSidebar() {
   return (
     <aside className="fixed left-0 top-0 hidden h-screen w-[260px] overflow-y-auto bg-gradient-to-b from-[#8e6370] via-[#9a6f7a] to-[#8b616d] text-white lg:block">
       <div className="flex h-full flex-col">
-        <div className="border-b border-white/10 p-6">
+        <div className="border-b border-white/10 ">
           <div className="flex justify-center rounded-xl">
             <img
               src="/GH-Logo.png"
               alt="Girl House Logo"
-              className="w-[160px]"
+              className="w-[150px]"
             />
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6">
+        <nav className="flex-1 px-4 py-4">
           <div className="space-y-2">
             {navigation.map((item) => {
               const Icon = item.icon;

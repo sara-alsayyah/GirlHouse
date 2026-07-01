@@ -30,6 +30,7 @@ export function SiteHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const [hidden, setHidden] = useState(false);
   function handleSearch(e: React.FormEvent) {
   e.preventDefault();
 
@@ -48,26 +49,17 @@ export function SiteHeader() {
   function closeMenus() {
     setIsMobileMenuOpen(false);
   }
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  
   return (
-    <header className="relative z-30">
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? " backdrop-blur-2xl shadow-sm" : "bg-transparent"
-        }`}
-      >
+   <>
+<div className="top-0 left-0 right-0 z-[60] bg-[#5A3A42] py-2 text-center text-xs tracking-[0.25em] uppercase text-white">
+  ✨ Free Delivery Across Lebanon • New Collection Available
+</div>
+
+  <header className="relative z-30">
+  <nav className="absolute top-0 left-0 right-0 z-[50]">
         <div
-          className={`flex items-center justify-between transition-all duration-300 ${
-            scrolled ? "h-[80px]" : "h-[92px]"
+          className={`flex items-center justify-between transition-all duration-300
           }`}
         >
           <div className="mx-auto max-w-7xl w-full px-6 lg:px-10">
@@ -121,11 +113,7 @@ export function SiteHeader() {
               </div>
 
               <div
-                className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
-                 scrolled
-  ? "top-1/2 -translate-y-1/2 scale-[1.2]"
-  : "top-2 scale-[1.65]"
-                }`}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-180 z-50"
               >
                 <Link href="/" onClick={closeMenus}>
                   <BrandLogo />
@@ -236,5 +224,6 @@ export function SiteHeader() {
 
       <CategoryMegaMenu open={false} onEnter={() => {}} onLeave={() => {}} />
     </header>
+    </>
   );
 }

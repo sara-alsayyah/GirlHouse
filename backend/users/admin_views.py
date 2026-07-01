@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models.functions import Coalesce
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, DecimalField, Value
 from rest_framework import generics, serializers
 from rest_framework.filters import OrderingFilter, SearchFilter
 
@@ -49,7 +49,9 @@ class AdminCustomersAPIView(generics.ListAPIView):
         return (
             User.objects.annotate(
                 total_orders=Count("order"),
-                total_spent=Coalesce(Sum("order__total_price"), 0),
+                total_spent=Coalesce(Sum("order__total_price"),Value(0),
+                output_field=DecimalField(max_digits=12, decimal_places=2),
+                ),
             )
             .order_by("-date_joined")
         )
@@ -63,5 +65,7 @@ class AdminCustomerDetailAPIView(generics.RetrieveUpdateAPIView):
     def get_queryset(self):
         return User.objects.annotate(
             total_orders=Count("order"),
-            total_spent=Coalesce(Sum("order__total_price"), 0),
+            total_spent=Coalesce(Sum("order__total_price"),Value(0),
+            output_field=DecimalField(max_digits=12, decimal_places=2),
+            ),
         )

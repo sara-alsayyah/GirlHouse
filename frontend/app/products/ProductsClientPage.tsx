@@ -91,33 +91,7 @@ export function ProductsClientPage({
  
   return (
     <PageReveal className="mx-auto max-w-7xl px-6 pt-2 pb-28 lg:px-10">
-
-  {/* HERO */}
-  <section className="relative mt-16 lg:mt-24 h-[600px] overflow-hidden">
-    <img
-      src="http://127.0.0.1:8001/media/products/hero.png"
-      alt="Girl House Collection"
-      className="absolute inset-0 h-full w-full object-cover"
-    />
-
-    <div className="absolute inset-0 bg-black/30" />
-
-    <div className="relative z-10 flex h-full items-center justify-center">
-      <div className="text-center text-white">
-
-        <h1 className="text-6xl font-light">
-         NEW COLLECTION
-        </h1>
-
-        <p className="mt-4 text-lg">
-          حيث تلتقي الأناقة بالاحتشام
-        </p>
-      </div>
-    </div>
-  </section>
-
-  {/* Rest of page */}
-      <div className="sticky top-[92px] z-40 border-b border-[#F1E5E5] bg-white/70 backdrop-blur-xl">
+         <div className="sticky top-[92px] z-40 border-b border-[#F1E5E5] bg-white/70 backdrop-blur-xl">
         <div className="flex gap-2 justify-center overflow-x-auto px-4 py-3">
 
           <button
@@ -152,6 +126,61 @@ export function ProductsClientPage({
           ))}
         </div>
       </div>
+
+  {/* HERO */}
+    <section className="relative mt-16 lg:mt-24 h-[600px] overflow-hidden">
+  <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="absolute inset-0 h-full w-full object-cover"
+  >
+    <source src="http://127.0.0.1:8001/media/hero/hero.mp4" type="video/mp4" />
+  </video>
+
+  {/* dark overlay */}
+  <div className="absolute inset-0 bg-black/30" />
+
+  {/* content */}
+  <div className="relative z-10 flex h-full items-center justify-center">
+    <div className="text-center text-white">
+      <p className="mb-3 tracking-[0.35em] uppercase text-sm">
+        NEW COLLECTION
+      </p>
+
+      <h1 className="text-6xl font-light">Girl House</h1>
+
+      <p className="mt-4 text-lg">حيث تلتقي الأناقة بالاحتشام</p>
+    </div>
+  </div>
+</section>
+
+  <section className="relative mt-16 lg:mt-24 h-[600px] overflow-hidden">
+    <img
+      src="http://127.0.0.1:8001/media/products/hero.png"
+      alt="Girl House Collection"
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+
+    <div className="absolute inset-0 bg-black/30" />
+
+    <div className="relative z-10 flex h-full items-center justify-center">
+      <div className="text-center text-white">
+
+        <h1 className="text-6xl font-light">
+         NEW COLLECTION
+        </h1>
+
+        <p className="mt-4 text-lg">
+          حيث تلتقي الأناقة بالاحتشام
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* Rest of page */}
+   
 
       {/* ======================
           MOBILE FILTER BUTTON

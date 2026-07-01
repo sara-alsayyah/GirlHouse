@@ -62,9 +62,7 @@ export function ProductCard({
     <motion.article
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className={`product-glow luxury-card group flex h-full flex-col overflow-hidden rounded-none ${
-  featured ? "md:flex-row" : ""
-}`}
+      className="group flex flex-col overflow-hidden bg-transparent"
     >
       {/* IMAGE */}
       <div className={`relative overflow-hidden ${featured ? "md:w-[52%]" : ""}`}>
@@ -73,7 +71,7 @@ export function ProductCard({
             ref={imageRef}
             src={imageSrc}
             alt={product.name}
-            className={`w-full object-cover transition duration-500 group-hover:scale-[1.04] ${
+            className={`w-full object-contain transition duration-500 group-hover:scale-[1.04] ${
               featured ? "h-full min-h-[360px]" : "h-[280px] sm:h-[320px]"
             }`}
           />
@@ -116,27 +114,21 @@ export function ProductCard({
       </div>
 
       {/* CONTENT */}
-      <div className="flex flex-1 flex-col justify-between gap-6 p-6">
+      <div className="mt-4 flex flex-col items-center text-center gap-2">
 
         <div className="space-y-4">
 
           <div className="flex items-start justify-between gap-4">
 
             <div>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--muted)]">
-                Trending now
-              </p>
+             
 
-              <Link
-                href={`/products/${product.slug}`}
-                className={`mt-2 block leading-tight ${
-                  featured
-                    ? "font-[var(--font-display)] text-3xl"
-                    : "text-xl font-semibold"
-                }`}
-              >
-                {product.name}
-              </Link>
+            <Link
+  href={`/products/${product.slug}`}
+  className="text-base font-medium"
+>
+  {product.name}
+</Link>
             </div>
 
             <div className="text-right">

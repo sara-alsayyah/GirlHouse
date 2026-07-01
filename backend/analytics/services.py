@@ -14,9 +14,12 @@ class AnalyticsService:
     def top_products(limit=5):
         return (
             OrderItem.objects.filter(order__status='delivered')
-            .values(product_id=F('product__id'), name=F('product__name'))
-            .annotate(total_sold=Sum('quantity'))
-            .order_by('-total_sold')[:limit]
+           .values(
+               productId=F("product__id"),
+               name=F("product__name"),
+            )
+            .annotate(total_sold=Sum("quantity"))
+            .order_by("-total_sold")[:limit]
         )
 
     @staticmethod
