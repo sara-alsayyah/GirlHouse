@@ -52,8 +52,8 @@ export function SiteHeader() {
   
   return (
    <>
-<div className="top-0 left-0 right-0 z-[60] bg-[#5A3A42] py-2 text-center text-xs tracking-[0.25em] uppercase text-white">
-  ✨ Free Delivery Across Lebanon • New Collection Available
+<div className="brand-font top-0 left-0 right-0 z-[60] bg-[#956773] py-2 text-center text-xs tracking-[0.25em] uppercase text-white">
+  ✨ Delivery All Over Lebanon • New Collection Available
 </div>
 
   <header className="relative z-30">
@@ -63,117 +63,88 @@ export function SiteHeader() {
           }`}
         >
           <div className="mx-auto max-w-7xl w-full px-6 lg:px-10">
-            <div className="relative h-[92px] w-full flex items-start justify-between pt-2">
-              <div className="hidden lg:flex items-center gap-4 flex-1">
-                <Link
-                  href="/products"
-                  onClick={closeMenus}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
-                  aria-label="Store"
-                >
-                  <BagIcon className="h-5 w-5 text-[#b78895]" />
-                </Link>
+            <div className="relative h-[92px] w-full flex items-center justify-between pt-2">
 
-                <Link
-  href={
-    !user
-      ? "/login"
-      : user.is_admin
-      ? "/admin"
-      : "/account"
-  }
-  onClick={closeMenus}
-  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
-  aria-label="Account"
->
-  <UserIcon className="h-5 w-5 text-[#b78895]" />
-</Link>
-<button
-  type="button"
-  onClick={() => setSearchOpen((prev) => !prev)}
-  className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition"
-  aria-label="Search"
->
-  <SearchIcon className="h-5 w-5 text-[#b78895]" />
-</button>
+  {/* LEFT */}
+  <div className="flex items-center gap-3 flex-1">
 
-                <button
-                  type="button"
-                  onClick={openWishlist}
-                  className="relative flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition cursor-pointer"
-                  aria-label="Open wishlist"
-                >
-                  <HeartIcon className="h-5 w-5 text-[#b78895]" />
-                  {wishlistCount ? (
-                    <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b78895] text-[9px] text-white font-semibold">
-                      {wishlistCount}
-                    </span>
-                  ) : null}
-                </button>
-              </div>
+    {/* Desktop search */}
+    <div className="hidden lg:flex items-center gap-2 w-[240px]">
+      <SearchIcon className="h-5 w-5 text-[#b78895]" />
 
-              <div
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-180 z-50"
-              >
-                <Link href="/" onClick={closeMenus}>
-                  <BrandLogo />
-                </Link>
-              </div>
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search products..."
+        className="w-full bg-transparent border-b border-[#d8b6be] outline-none text-sm placeholder:text-[#b78895]/60"
+      />
+    </div>
 
-              <div className="hidden lg:flex items-center justify-end gap-1 flex-1">
-                {rightNavigation.map((item) => {
-                  const isActive =
-                    item.href === "/"
-                      ? pathname === "/"
-                      : pathname.startsWith(item.href.split("?")[0]);
+    {/* Mobile search icon */}
+    <button
+      onClick={() => setSearchOpen(true)}
+      className="lg:hidden flex items-center justify-center"
+    >
+      <SearchIcon className="h-5 w-5 text-[#b78895]" />
+    </button>
 
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={closeMenus}
-                      className={`
-  relative px-5 py-2
-  rounded-full
-  text-[15px]
-  font-medium
-  transition-all duration-300
-  hover:-translate-y-[1px]
-  ${
-    isActive
-      ? `
-        text-[#b78895]
-        bg-white/70
-        shadow-[0_4px_18px_rgba(183,136,149,0.15)]
-      `
-      : `
-        text-[#7d6269]
-        hover:text-[#b78895]
-        hover:bg-white/40
-      `
-  }
-`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
+  </div>
 
-              <div className="lg:hidden">
-                <button
-                  type="button"
-                  onClick={() => setIsMobileMenuOpen((current) => !current)}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg"
-                  aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-                >
-                  {isMobileMenuOpen ? (
-                    <CloseIcon className="h-5 w-5 text-[#b78895]" />
-                  ) : (
-                    <MenuIcon className="h-5 w-5 text-[#b78895]" />
-                  )}
-                </button>
-              </div>
+  {/* CENTER LOGO */}
+  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 scale-[0.9] sm:scale-100">
+    <Link href="/" onClick={closeMenus}>
+      <BrandLogo />
+    </Link>
+  </div>
+
+  {/* RIGHT */}
+  <div className="flex items-center justify-end flex-1">
+
+    {/* Desktop */}
+    <div className="hidden lg:flex items-center gap-5">
+
+      <Link
+        href={user?.is_admin ? "/admin" : "/account"}
+        className="flex items-center gap-2 text-sm text-[#7d6269]"
+      >
+        <UserIcon className="h-5 w-5 text-[#b78895]" />
+        <span className="hidden xl:inline">Account</span>
+      </Link>
+       <Link
+        href={"/whislist"}
+        className="flex items-center gap-2 text-sm text-[#7d6269]"
+      >
+        <HeartIcon className="h-5 w-5 text-[#b78895]" />
+        <span className="hidden xl:inline">Wishlist ({wishlistCount})</span>
+     
+      </Link>
+
+      <Link
+        href="/cart"
+        className="flex items-center gap-2 text-sm text-[#7d6269]"
+      >
+        <BagIcon className="h-5 w-5 text-[#b78895]" />
+        <span className="hidden xl:inline">Bag (0)</span>
+      </Link>
+
+    </div>
+
+    {/* Mobile menu button */}
+    <div className="lg:hidden">
+      <button
+        type="button"
+        onClick={() => setIsMobileMenuOpen((c) => !c)}
+        className="flex h-10 w-10 items-center justify-center"
+      >
+        {isMobileMenuOpen ? (
+          <CloseIcon className="h-5 w-5 text-[#b78895]" />
+        ) : (
+          <MenuIcon className="h-5 w-5 text-[#b78895]" />
+        )}
+      </button>
+    </div>
+
+  </div>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { AdminProduct } from "../../types/products";
 import { ProductStockBadge } from "./ProductStockBadge";
 import { ProductActions } from "./ProductActions";
-import { resolveMediaUrl } from "@/app/lib/api";
+import { getProductImageUrl } from "@/app/lib/api";
 
 interface Props {
   products: AdminProduct[];
@@ -27,12 +27,15 @@ export function ProductsTable({ products, onDeleteClick, onEditClick }: Props) {
           </thead>
 
           <tbody>
-            {products.map((product) => (
+            {products.map((product) => {
+              const imageSrc = getProductImageUrl(product);
+
+              return (
               <tr key={product.id} className="border-b border-[#f7ecef]">
                 <td className="px-4 py-5">
                   <div className="flex items-center gap-3">
                     <img
-                      src={resolveMediaUrl(product.image) ?? "/placeholder.png"}
+                      src={imageSrc ?? "/placeholder.png"}
                       alt={product.name}
                       className="h-12 w-12 rounded-xl object-cover"
                     />
@@ -68,7 +71,8 @@ export function ProductsTable({ products, onDeleteClick, onEditClick }: Props) {
                   />
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>

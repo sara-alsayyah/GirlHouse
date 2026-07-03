@@ -54,6 +54,7 @@ class ProductListAPIView(generics.ListAPIView):
 
         min_price = self.request.query_params.get("min_price")
         max_price = self.request.query_params.get("max_price")
+        sort = self.request.query_params.get("sort")
 
         if min_price:
             queryset = queryset.filter(price__gte=min_price)
@@ -68,6 +69,8 @@ class ProductListAPIView(generics.ListAPIView):
 
         elif in_stock in ["false", "0", "False"]:
             queryset = queryset.filter(stock__lte=0)
+        if sort == "new":
+            queryset = queryset.order_by("-created_at")
 
         return queryset
 

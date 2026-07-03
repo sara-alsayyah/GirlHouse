@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { money, resolveMediaUrl } from "@/app/lib/api";
+import { getProductImageUrl, money } from "@/app/lib/api";
 import { useStore } from "@/app/providers/StoreProvider";
 
 export function WishlistDrawer() {
@@ -39,7 +39,7 @@ export function WishlistDrawer() {
             <div className="mt-8 flex-1 space-y-4 overflow-y-auto pr-1">
               {wishlistItems.length ? (
                 wishlistItems.map((item) => {
-                  const imageSrc = resolveMediaUrl(item.product.image);
+                  const imageSrc = getProductImageUrl(item.product);
                   return (
                     <div key={item.id} className="flex gap-4 rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/72 p-4">
                       <div className="h-24 w-20 overflow-hidden rounded-[18px] bg-[linear-gradient(135deg,#fff0ed,#c99999)]">

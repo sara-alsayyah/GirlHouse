@@ -91,40 +91,53 @@ export function ProductsClientPage({
  
   return (
     <PageReveal className="mx-auto max-w-7xl px-6 pt-2 pb-28 lg:px-10">
-         <div className="sticky top-[92px] z-40 border-b border-[#F1E5E5] bg-white/70 backdrop-blur-xl">
-        <div className="flex gap-2 justify-center overflow-x-auto px-4 py-3">
+      <div className="sticky top-[120px] z-40">
+  <div className="flex justify-center gap-8 overflow-x-auto px-4 py-3">
+    {/* All button */}
 
-          <button
-            onClick={() => {
-              setCategory("");
-              setPage(1);
-            }}
-            className={`whitespace-nowrap px-4 py-2 text-xs border ${
-              category === ""
-                ? "bg-[#B78895] text-white"
-                : "border-[#F1E5E5]"
-            }`}
-          >
-            All
-          </button>
+    <button
+      onClick={() => {
+        setCategory("");
+        setPage(1);
+      }}
+      className={`brand-font relative whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors ${
+        category === ""
+          ? "text-[#B78895]"
+          : "text-[#777] hover:text-[#B78895]"
+      }`}
+    >
+      All
 
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => {
-                setCategory(cat.slug);
-                setPage(1);
-              }}
-              className={`whitespace-nowrap  px-4 py-2 text-xs border ${
-                category === cat.slug
-                  ? "bg-[#B78895] text-white"
-                  : "border-[#F1E5E5]"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
+      {category === "" && (
+        <span className="absolute bottom-0 left-0 h-[2px] w-full bg-[#B78895]" />
+      )}
+    </button>
+
+    {/* Categories */}
+
+    {categories.map((cat) => (
+      <button
+        key={cat.id}
+        onClick={() => {
+          setCategory(cat.slug);
+          setPage(1);
+        }}
+        className={`brand-font relative whitespace-nowrap px-4 py-3 text-sm transition-colors ${
+          category === cat.slug
+            ? "text-[#8f727a]"
+            : "text-[#000] hover:text-[#B78895]"
+        }`}
+      >
+        {cat.name}
+
+        {category === cat.slug && (
+          <span className="absolute bottom-0 left-0 h-[2px] w-full bg-[#B78895]" />
+        )}
+      </button>
+    ))}
+  </div>
+
+  <div className="border-b border-[#b8b8b8]" />
       </div>
 
   {/* HERO */}

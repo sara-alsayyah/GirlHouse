@@ -28,6 +28,8 @@ type User = {
   id: number;
   email: string;
   is_admin?: boolean;
+  is_staff?: boolean;
+  is_superuser?: boolean;
 } | null;
 
 type StoreContextValue = {
@@ -162,7 +164,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return raw ? JSON.parse(raw) : null;
   });
 
-  const isAdmin = !!user && (user.is_admin || (user as any).is_staff || (user as any).is_superuser);
+  const isAdmin = !!(user && (user.is_admin || user.is_staff || user.is_superuser));
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [savedForLater, setSavedForLater] = useState<CartItem[]>(() =>

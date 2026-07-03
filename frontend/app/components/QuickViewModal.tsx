@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { money, resolveMediaUrl } from "@/app/lib/api";
+import { getProductImageUrl, money } from "@/app/lib/api";
 import { useStore } from "@/app/providers/StoreProvider";
 
 export function QuickViewModal() {
   const { quickViewProduct, setQuickViewProduct, addProductToCart } = useStore();
+  const imageSrc = getProductImageUrl(quickViewProduct);
 
   return (
     <AnimatePresence>
@@ -28,10 +29,10 @@ export function QuickViewModal() {
           >
             <div className="grid gap-6 md:grid-cols-[0.9fr,1.1fr]">
               <div className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#fff6dd,#ddb75b)]">
-                {quickViewProduct.image ? (
+                {imageSrc ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={resolveMediaUrl(quickViewProduct.image) ?? ""}
+                    src={imageSrc}
                     alt={quickViewProduct.name}
                     className="h-[380px] w-full object-cover"
                   />

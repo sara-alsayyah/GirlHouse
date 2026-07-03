@@ -8,14 +8,19 @@ export type City = {
   id: number;
   name: string;
 };
-
+export interface ProductImage {
+  id: number;
+  image: string;
+  is_main?: boolean;
+}
 export type Product = {
   id: number;
   name: string;
   description: string;
   price: string | number;
   stock: number;
-  image: string | null;
+  image?: string;
+  images?: ProductImage[];
   slug: string;
   category: Category;
   created_at: string;

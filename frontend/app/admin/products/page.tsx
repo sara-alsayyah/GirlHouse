@@ -122,12 +122,18 @@ export default function ProductsPage() {
     setSelectedProduct(null);
   };
 
-  const handleCreateProduct = async (newProduct: any) => {
+  const handleCreateProduct = async (newProduct: AdminProduct) => {
     const token = getStoredAccessToken();
     if (!token) return;
 
     try {
-      const created = await createProduct(token, newProduct);
+      const created = await createProduct(token, {
+        name: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        stock: newProduct.stock,
+        category: newProduct.category.id,
+      });
       setProducts((current) => [...current, created]);
     } catch (error) {
       setError(getApiErrorMessage(error));

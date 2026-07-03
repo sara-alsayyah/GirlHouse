@@ -6,7 +6,7 @@ from django.db.models.functions import TruncMonth
 
 from core.permissions import IsAdmin
 from orders.models import Order, OrderItem
-from products.models import Product
+from products.models import Product, ProductImage
 from users.models import User
 from .models import HeroSlide
 from .serializers import HeroSlideSerializer
@@ -35,6 +35,26 @@ class AdminDashboardAPIView(APIView):
                 .order_by("month")[:12]
             )
 
+            top_product_rows = list(
+                OrderItem.objects.filter(order__status="delivered")
+                .values(
+                    "product__id",
+                    "product__name",
+                    "product__price",
+                    "product__stock",
+                )
+                .annotate(total_sold=Sum("quantity"))
+                .order_by("-total_sold")[:5]
+            )
+            top_product_ids = [item["product__id"] for item in top_product_rows]
+            top_product_images = {}
+            for image in ProductImage.objects.filter(product_id__in=top_product_ids).order_by(
+                "product_id",
+                "-is_main",
+                "id",
+            ):
+                top_product_images.setdefault(image.product_id, image.image.url)
+
             data = {
                 "total_revenue": float(
                     Order.objects.filter(status="delivered")
@@ -57,26 +77,17 @@ class AdminDashboardAPIView(APIView):
                         items_count_value=F("items_count"),
                     )[:5]
                 ),
-                 "top_products": [
-                 {
-                    "id": item["product__id"],
-                    "name": item["product__name"],
-                    "image": item["product__image"],
-                    "price": float(item["product__price"] or 0),
-                    "stock": item["product__stock"],
-                    "total_sold": item["total_sold"],
-                }
-                for item in OrderItem.objects.filter(order__status="delivered")
-                   .values(
-                     "product__id",
-                     "product__name",
-                     "product__image",
-                     "product__price",
-                     "product__stock",
-                    )
-                   .annotate(total_sold=Sum("quantity"))
-                   .order_by("-total_sold")[:5]
-                   ],
+                "top_products": [
+                    {
+                        "id": item["product__id"],
+                        "name": item["product__name"],
+                        "image": top_product_images.get(item["product__id"]),
+                        "price": float(item["product__price"] or 0),
+                        "stock": item["product__stock"],
+                        "total_sold": item["total_sold"],
+                    }
+                    for item in top_product_rows
+                ],
 
             
                 "monthly_revenue": [

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Wishlist, WishlistItem, Review
+from .models import Category, Product, Wishlist, WishlistItem, Review, ProductImage
 from audit.models import AdminActionLog
 
 @admin.register(Category)
@@ -7,10 +7,15 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     search_fields = ('name', 'slug')
     prepopulated_fields = {'slug': ('name',)}
+    
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 1
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    inlines = [ProductImageInline]
 
     list_display = (
         "name",
@@ -60,6 +65,7 @@ class ProductAdmin(admin.ModelAdmin):
            action_type="product_create" if not change else "product_update",
            message=f"{'Created' if not change else 'Updated'} product {obj.name}"
     )
+
 
 @admin.register(Wishlist)
 class WishlistAdmin(admin.ModelAdmin):

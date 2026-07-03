@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PageReveal } from "@/app/components/PageReveal";
-import { money, resolveMediaUrl } from "@/app/lib/api";
+import { getProductImageUrl, money } from "@/app/lib/api";
 import { useStore } from "@/app/providers/StoreProvider";
 
 export default function CartPage() {
@@ -40,7 +40,7 @@ export default function CartPage() {
         <div className="space-y-5">
           {cartItems.length ? (
             cartItems.map((item) => {
-              const imageSrc = resolveMediaUrl(item.product.image);
+             const imageSrc = getProductImageUrl(item.product);
               return (
                 <div key={item.id} className="luxury-card rounded-[30px] p-5">
                   <div className="flex flex-col gap-5 sm:flex-row sm:items-center">

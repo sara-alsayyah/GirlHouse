@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, WishlistItem, Review
+from .models import Product, Category, WishlistItem, Review, ProductImage
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -11,9 +11,14 @@ class CategorySerializer(serializers.ModelSerializer):
             "slug",
         ]
 
-
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["id", "image", "is_main"]
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
+    images = ProductImageSerializer(many=True, read_only=True)
+    main_image = serializers.SerializerMethodField()
 
     average_rating = serializers.ReadOnlyField()
     is_in_stock = serializers.ReadOnlyField()
@@ -27,7 +32,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "stock",
-            "image",
+            "images",
+            "main_image",
             "slug",
             "category",
             "created_at",
@@ -35,7 +41,13 @@ class ProductSerializer(serializers.ModelSerializer):
             "is_in_stock",
             "low_stock",
         ]
+    def get_main_image(self, obj):
+        img = obj.images.filter(is_main=True).first()
+        if img:
+            return img.image.url
 
+        img = obj.images.first()
+        return img.image.url if img else None
 
 class WishlistItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)

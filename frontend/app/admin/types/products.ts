@@ -15,7 +15,12 @@ export interface AdminProduct {
   };
   price: number;
   stock: number;
-  image: string | null;
+  image?: string | null;
+  images?: {
+    id: number;
+    image: string;
+    is_main?: boolean;
+  }[];
   slug: string;
   created_at: string;
   description?: string;

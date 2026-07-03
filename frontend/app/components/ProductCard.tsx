@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import type { Product } from "@/app/lib/types";
-import { money, resolveMediaUrl } from "@/app/lib/api";
+import { getProductImageUrl, money } from "@/app/lib/api";
 import { useStore } from "@/app/providers/StoreProvider";
 import { EyeIcon, HeartIcon } from "@/app/components/icons";
 
@@ -15,8 +15,6 @@ export function ProductCard({
   product: Product | null | undefined;
   featured?: boolean;
 }) {
-  if (!product) return null;
-
   const {
     addProductToCart,
     toggleWishlist,
@@ -25,13 +23,15 @@ export function ProductCard({
   } = useStore();
 
   const imageRef = useRef<HTMLImageElement | null>(null);
-  const imageSrc = resolveMediaUrl(product.image);
+  const imageSrc = getProductImageUrl(product);
 
   const [loading, setLoading] = useState(false);
 
-  const wishlisted = isWishlisted(product.id);
+  const wishlisted = product ? isWishlisted(product.id) : false;
 
   const handleQuickAdd = async () => {
+    if (!product) return;
+
     try {
       setLoading(true);
       await addProductToCart(product, imageRef.current ?? undefined);
@@ -43,6 +43,8 @@ export function ProductCard({
   };
 
   const handleQuickView = () => {
+    if (!product) return;
+
     try {
       setQuickViewProduct(product);
     } catch (err) {
@@ -51,12 +53,16 @@ export function ProductCard({
   };
 
   const handleWishlist = async () => {
+    if (!product) return;
+
     try {
       await toggleWishlist(product);
     } catch (err) {
       console.error("Wishlist error:", err);
     }
   };
+
+  if (!product) return null;
 
   return (
     <motion.article

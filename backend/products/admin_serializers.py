@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Count
 
-from .models import Product, Category, Review
+from .models import Product, Category, Review, ProductImage
 
 
 class AdminCategorySerializer(serializers.ModelSerializer):
@@ -35,8 +35,16 @@ class AdminReviewSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class AdminProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["id", "image", "is_main"]
+        read_only_fields = fields
+
+
 class AdminProductListSerializer(serializers.ModelSerializer):
     category = AdminCategorySerializer()
+    images = AdminProductImageSerializer(many=True, read_only=True)
     low_stock = serializers.SerializerMethodField()
     average_rating = serializers.ReadOnlyField()
     is_in_stock = serializers.ReadOnlyField()
@@ -48,7 +56,7 @@ class AdminProductListSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "stock",
-            "image",
+            "images",
             "slug",
             "category",
             "created_at",
@@ -63,6 +71,7 @@ class AdminProductListSerializer(serializers.ModelSerializer):
 
 class AdminProductDetailSerializer(serializers.ModelSerializer):
     category = AdminCategorySerializer()
+    images = AdminProductImageSerializer(many=True, read_only=True)
     average_rating = serializers.ReadOnlyField()
     is_in_stock = serializers.ReadOnlyField()
     low_stock = serializers.SerializerMethodField()
@@ -86,7 +95,6 @@ class AdminProductCreateUpdateSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "stock",
-            "image",
             "category"
         ]
 

@@ -4,7 +4,7 @@ from django.db.models import Sum, Count, F, ExpressionWrapper, DecimalField
 from django.db.models.functions import TruncDay
 
 from orders.models import Order, OrderItem
-from products.models import Product
+from products.models import Product, ProductImage
 from users.models import User
 
 
@@ -52,7 +52,6 @@ class DashboardService:
             OrderItem.objects.values(
                 "product__id",
                 "product__name",
-                "product__image",
             )
             .annotate(
                 total_sold=Sum("quantity"),
@@ -65,6 +64,13 @@ class DashboardService:
             )
             .order_by("-total_sold")[:5]
         )
+        top_product_images = {}
+        for image in ProductImage.objects.filter(
+            product_id__in=[item["product__id"] for item in top_products]
+        ).order_by("product_id", "-is_main", "id"):
+            top_product_images.setdefault(image.product_id, image.image.url)
+        for item in top_products:
+            item["product__image"] = top_product_images.get(item["product__id"])
 
         # ---------- LOW STOCK ----------
         low_stock_products = list(

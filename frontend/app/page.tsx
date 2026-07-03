@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { asArray, getHeroSlides, getProducts, money, resolveMediaUrl } from "@/app/lib/api";
+import { asArray, getHeroSlides, getProducts, getProductImageUrl, money, resolveMediaUrl } from "@/app/lib/api";
 import type { Product } from "@/app/lib/types";
 import { PageReveal } from "@/app/components/PageReveal";
 import {
@@ -21,6 +22,18 @@ type HeroSlide = {
 
 
 export default function HomePage() {
+   const router = useRouter();
+  const [page, setPage] = useState(1);
+
+  const handleCategoryClick = (cat: any) => {
+    setPage(1);
+
+    if (cat.slug === "new") {
+      router.push("/products?sort=new");
+    } else {
+      router.push(`/products?category=${cat.slug}`);
+    }
+  };
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -32,11 +45,15 @@ export default function HomePage() {
   const mostPopular = products.slice(0, 5);
 
   const featuredCategories = [
+    { name: "وصل حديثاً",    nameEn: "New Arrivals", slug: "new" },
     { name: "فساتين",        nameEn: "Dresses",     slug: "dresses" },
     { name: "عبايات",        nameEn: "Abaya",      slug: "abaya" },
     { name: "تنانير",   nameEn: "Skirts", slug: "skirts" },
     { name: " اطقم", nameEn: "Sets", slug: "sets" },
-    { name: "وصل حديثاً",    nameEn: "New Arrivals", slug: "women" },
+    { name: "حجاب ",    nameEn: "Hijab", slug: "hijab" },
+    { name: "جزادين ",    nameEn: "Bags", slug: "bags" },
+
+
   ];
 
  const trustBadges = [
@@ -69,7 +86,6 @@ useEffect(() => {
 
   const { toggleWishlist, isWishlisted } = useStore();
 const currentSlide = slides?.[current] ?? null;
-
   return (
     <PageReveal className="page-shell pb-2 ">
 
@@ -125,9 +141,11 @@ backgroundImage: currentSlide?.image
                 style={{ fontFamily: "var(--font-display, serif)" }}
               >
                 MODESTY <p>WITH{" "}
-                <span style={{ color: "#d4b080" }}>ELEGANCE</span></p>
+               <span className="shine-gold" data-text="ELEGANCE">
+  ELEGANCE
+</span></p>
               </h1>
-              <p className="mt-4 text-base !text-[#e8cfc0] text-left" dir="rtl">
+              <p className="arabic-font mt-4 text-base !text-[#e8cfc0] text-left" dir="rtl">
                 حيث تلتقي الأناقة بالاحتشام
               </p>
             </motion.div>
@@ -139,14 +157,21 @@ backgroundImage: currentSlide?.image
               className="mt-8"
             >
               <Link
-                href="/products"
-                className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-medium uppercase tracking-widest text-white"
-                style={{
-                  background: "linear-gradient(135deg,#c9a96e 0%,#a67a5a 100%)",
-                }}
-              >
-                تسوقي الآن →
-              </Link>
+  href="/products"
+  className="relative inline-flex items-center gap-2 px-7 py-3 text-sm font-medium uppercase tracking-widest text-white overflow-hidden"
+  style={{
+    background: "linear-gradient(135deg,#c9a96e 10%,#a67a5a 100%)",
+  }}
+>
+
+  <span className="absolute inset-0 -translate-x-full animate-[shine_2.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
+  <span className="absolute inset-0 rounded-md shadow-[0_0_25px_rgba(201,169,110,0.35)]" />
+
+  <span className="arabic-font relative z-10">
+    تسوقي الآن →
+  </span>
+</Link>
             </motion.div>
           </div>
 
@@ -181,24 +206,33 @@ backgroundImage: currentSlide?.image
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-10 ">
         {/* heading with gold lines */}
         <div className="mb-10 flex items-center justify-center gap-4">
-          <span className="h-px w-16 bg-[#c9a96e]" />
+          <span className="h-px w-16 bg-[linear-gradient(90deg,transparent_0%,#c89b2c_20%,#f4e28a_50%,#d4af37_75%,transparent_100%)]" />
           <p
-            className="text-center text-sm tracking-[0.3em] text-[#9a7060]"
+            className="arabic-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
             dir="rtl"
           >
             تسوقي من مجموعاتنا
           </p>
-          <span className="h-px w-16 bg-[#c9a96e]" />
+          <span className="h-px w-20 bg-[linear-gradient(90deg,transparent_0%,#c89b2c_20%,#f4e28a_50%,#d4af37_75%,transparent_100%)]" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {featuredCategories.map((cat, i) => (
-            <Link
-              key={cat.slug + i}
-              href={`/products?category=${cat.slug}`}
-              className="group relative overflow-hidden "
-              style={{ aspectRatio: "3/4" }}
-            >
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+         {featuredCategories.map((cat, i) => {
+const categoryProducts =
+  cat.slug === "new"
+    ? products
+    : products.filter((p) => p.category?.slug === cat.slug);
+
+const imageSrc = getProductImageUrl(categoryProducts[0]);
+
+  return (
+     <Link
+      key={cat.slug + i}
+      href={`/products?category=${cat.slug}`}
+      onClick={() => handleCategoryClick(cat)}
+      className="group relative overflow-hidden"
+      style={{ aspectRatio: "3/4" }}
+    >
               {/* placeholder gradient bg — replaced by product image if available */}
               <div
                 className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
@@ -210,9 +244,9 @@ backgroundImage: currentSlide?.image
                 }}
               />
               {/* product image if we have enough products */}
-              {products[i]?.image && (
+              {imageSrc && (
                 <img
-                  src={resolveMediaUrl(products[i].image) ?? ""}
+                  src={imageSrc}
                   alt={cat.name}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -226,20 +260,21 @@ backgroundImage: currentSlide?.image
                 }}
               />
               <p
-                className="absolute bottom-4 w-full text-center text-base font-medium text-white"
+                className="arabic-font absolute bottom-4 w-full text-center text-base text-white"
                 dir="rtl"
               >
                 {cat.name}
               </p>
             </Link>
-          ))}
+            );
+          })}
         </div>
 
         {/* "Show all" button */}
         <div className="mt-8 flex justify-center">
           <Link
             href="/products"
-            className="rounded-full border px-7 py-2.5 text-sm tracking-widest text-[#9a7060] transition hover:bg-[#f5ece8]"
+            className="arabic-font border px-7 py-2.5 text-sm tracking-widest text-[#9a7060] transition hover:bg-[#f5ece8]"
             style={{ borderColor: "#c9a96e" }}
             dir="rtl"
           >
@@ -257,7 +292,7 @@ backgroundImage: currentSlide?.image
           <div className="mb-10 flex items-center justify-center gap-4">
             <span className="h-px w-16 bg-[#c9a96e]" />
             <p
-              className="text-center text-sm tracking-[0.3em] text-[#9a7060]"
+              className="arabic-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
               dir="rtl"
             >
               الأكثر مبيعاً
@@ -269,6 +304,7 @@ backgroundImage: currentSlide?.image
   {(mostPopular.length ? mostPopular : Array(5).fill(null)).map(
     (product, i) => {
       const wishlisted = product ? isWishlisted(product.id) : false;
+      const imageSrc = getProductImageUrl(product);
 
       return (
         <motion.div
@@ -286,9 +322,9 @@ backgroundImage: currentSlide?.image
               background: "linear-gradient(135deg,#f0e0e4,#ddb5bc)",
             }}
           >
-            {product?.image ? (
+            {imageSrc ? (
               <img
-                src={resolveMediaUrl(product.image) ?? ""}
+                src={imageSrc}
                 alt={product.name ?? ""}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -351,7 +387,7 @@ backgroundImage: currentSlide?.image
       </section>
 
       {/* ─── TRUST BADGES ─────────────────────────────────────── */}
-      <section style={{ background: "#7e525d" }}>
+      <section style={{ background: "#956773" }}>
         <div className="mx-auto max-w-7xl px-4 py-4">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {trustBadges.map((b) => {
@@ -364,7 +400,7 @@ backgroundImage: currentSlide?.image
     >
       <Icon className="h-6 w-6 text-[#f3c85f]" />
 
-      <p className="text-sm font-medium text-[#e0cfd3]" dir="rtl">
+      <p className="text-sm font-medium text-[#ffffff]" dir="rtl">
         {b.ar}
       </p>
 
@@ -393,7 +429,10 @@ backgroundImage: currentSlide?.image
 
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7">
           {(products.length ? products.slice(0, 7) : Array(7).fill(null)).map(
-            (product: Product | null | undefined, i) => (
+            (product: Product | null | undefined, i) => {
+              const imageSrc = getProductImageUrl(product);
+
+              return (
               <div
                key={product?.id ?? `fallback-${i}`}
                 className="relative overflow-hidden"
@@ -402,15 +441,16 @@ backgroundImage: currentSlide?.image
                   background: "linear-gradient(135deg,#e8d0d4,#c9a0a8)",
                 }}
               >
-                {product?.image && (
+                {imageSrc && (
                   <img
-                    src={resolveMediaUrl(product.image) ?? ""}
+                    src={imageSrc}
                     alt=""
                     className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 )}
               </div>
-            )
+              );
+            }
           )}
         </div>
       </section>

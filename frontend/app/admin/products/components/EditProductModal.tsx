@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AdminCategory, AdminProduct } from "../../types/products";
-import { resolveMediaUrl } from "@/app/lib/api";
+import { getProductImageUrl } from "@/app/lib/api";
 import { X } from "lucide-react";
 
 interface Props {
@@ -19,7 +19,7 @@ const emptyProduct: AdminProduct = {
   description: "",
   price: 0,
   stock: 0,
-  image: "",
+  images: [],
   slug: "",
   category: {
     id: 0,
@@ -38,6 +38,9 @@ export function EditProductModal({
 }: Props) {
   const [formData, setFormData] = useState<AdminProduct>(emptyProduct);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const imagePreviewSrc = imageFile
+    ? URL.createObjectURL(imageFile)
+    : getProductImageUrl(formData);
 
   useEffect(() => {
     if (product) {
@@ -185,14 +188,10 @@ export function EditProductModal({
             </div>
 
 {/* IMAGE PREVIEW */}
-{(imageFile || formData.image) && (
+{imagePreviewSrc && (
   <div className="p-3 border rounded-xl bg-gray-50">
     <img
-      src={
-        imageFile
-          ? URL.createObjectURL(imageFile)
-          : resolveMediaUrl(formData.image) ?? "/placeholder.png"
-      }
+      src={imagePreviewSrc}
       alt={formData.name}
       className="h-20 w-20 object-cover rounded-lg"
     />
@@ -213,9 +212,6 @@ export function EditProductModal({
               onClick={() =>
                 onSave({
                   ...formData,
-                  image: imageFile
-                    ? URL.createObjectURL(imageFile)
-                    : formData.image,
                 })
               }
               className="px-4 py-2 bg-[#b78895] text-white rounded-xl"

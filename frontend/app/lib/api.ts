@@ -124,6 +124,17 @@ export function resolveMediaUrl(image?: string | null) {
   return `${origin}${image.startsWith("/") ? image : `/${image}`}`;
 }
 
+export function getProductImageUrl(
+  product?: { image?: string | null; images?: Product["images"] } | null,
+) {
+  const mainImage =
+    product?.images?.find((item) => item.is_main)?.image ??
+    product?.images?.[0]?.image ??
+    product?.image;
+
+  return resolveMediaUrl(mainImage);
+}
+
 export function money(value: string | number) {
   const numeric = typeof value === "number" ? value : Number.parseFloat(value);
   return new Intl.NumberFormat("en-US", {
@@ -479,7 +490,7 @@ export async function adminGetDashboard(token: string): Promise<DashboardData> {
 const topProducts = (data.top_products ?? []).map((product) => ({
   id: numberValue(product.pid ?? product.product_id ?? product.id),
   name: String(product.name ?? ""),
-  image: resolveMediaUrl(product.image ? `/media/${product.image}` : null),
+  image: resolveMediaUrl(typeof product.image === "string" ? product.image : null),
   price: numberValue(product.price),
   stock: numberValue(product.stock),
   total_sold: numberValue(product.total_sold),

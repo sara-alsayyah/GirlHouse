@@ -8,8 +8,8 @@ import {
   getProduct,
   getProducts,
   getReviews,
+  getProductImageUrl,
   money,
-  resolveMediaUrl,
 } from "@/app/lib/api";
 import type { Product, Review } from "@/app/lib/types";
 import { PageReveal } from "@/app/components/PageReveal";
@@ -111,7 +111,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const imageSrc = resolveMediaUrl(product.image);
+ const imageSrc = getProductImageUrl(product);
   const stockLabel = product.stock > 12 ? "In stock" : product.stock > 0 ? "Low stock" : "Sold out";
   const colorOptionsByCategory: Record<string, { name: string; swatch: string }[]> = {
     women: [

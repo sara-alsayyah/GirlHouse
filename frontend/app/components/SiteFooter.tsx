@@ -18,8 +18,8 @@ export function SiteFooter() {
   return (
 <footer className="mt-10">
       {/* Main footer */}
-      <div className="relative bg-[#7e525d] text-white overflow-hidden">
-         <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_top,#f3c85f,transparent_30%)]" />
+      <div className="relative bg-[#956773] text-white overflow-hidden">
+         <div className="absolute inset-0 opacity-25 " />
 
   <div className="relative mx-auto max-w-7xl px-6 py-20">
 

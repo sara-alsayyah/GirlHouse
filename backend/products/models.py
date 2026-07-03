@@ -30,7 +30,6 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
     stock = models.PositiveIntegerField(default=0, db_index=True)
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
 
     category = models.ForeignKey(
         Category,
@@ -92,6 +91,19 @@ class Product(models.Model):
     def low_stock(self):
         return 0 < self.stock <= self.LOW_STOCK_THRESHOLD
 
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="images"
+    )
+
+    image = models.ImageField(upload_to="products/")
+    is_main = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-is_main", "id"]
+    
 
 class Wishlist(models.Model):
     user = models.ForeignKey(

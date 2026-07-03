@@ -71,7 +71,6 @@ html[data-theme="dark"] body {
     ),
     linear-gradient(180deg, #100c08 0%, #16100b 48%, #1d1510 100%);
 }
-
 body::after {
   content: "";
   position: fixed;
@@ -83,6 +82,43 @@ body::after {
   background-size: 24px 24px;
   opacity: 0.18;
   z-index: -1;
+}
+.brand-font {
+  font-family: "GFS Didot", "Bodoni Moda", serif;
+}
+.arabic-font {
+  font-family: var(--font-arabic);
+}
+.shine-gold {
+  position: relative;
+  display: inline-block;
+  color: #d4b080;
+ 
+}
+
+.shine-gold::after {
+  content: attr(data-text);
+  position: absolute;
+  inset:0;
+  width: 100%;
+  color: rgba(255, 255, 255, 0.6);
+
+  clip-path: inset(0 100% 0 0);
+
+  animation: shineText 2.8s infinite;
+  pointer-events: none;
+}
+
+@keyframes shineText {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  50% {
+    clip-path: inset(0 0% 0 0);
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+  }
 }
 
 a {
@@ -175,7 +211,7 @@ html[data-theme="dark"] .soft-outline {
 }
 
 .gold-button:hover {
-  box-shadow: 0 18px 40px rgba(166, 122, 122, 0.3);
+  box-shadow: 0 18px 40px #a67a7a4d;
 }
 
 .soft-outline {
