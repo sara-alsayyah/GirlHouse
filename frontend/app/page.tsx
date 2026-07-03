@@ -260,7 +260,7 @@ const imageSrc = getProductImageUrl(categoryProducts[0]);
                 }}
               />
               <p
-                className="arabic-font absolute bottom-4 w-full text-center text-base text-white"
+                className="arabic-font absolute bottom-10 w-full font-medium text-center text-base text-amber-50"
                 dir="rtl"
               >
                 {cat.name}

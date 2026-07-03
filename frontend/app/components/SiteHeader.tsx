@@ -108,14 +108,14 @@ export function SiteHeader() {
         className="flex items-center gap-2 text-sm text-[#7d6269]"
       >
         <UserIcon className="h-5 w-5 text-[#b78895]" />
-        <span className="hidden xl:inline">Account</span>
+        <span className="hidden underline xl:inline">Account</span>
       </Link>
        <Link
         href={"/whislist"}
         className="flex items-center gap-2 text-sm text-[#7d6269]"
       >
         <HeartIcon className="h-5 w-5 text-[#b78895]" />
-        <span className="hidden xl:inline">Wishlist ({wishlistCount})</span>
+        <span className="hidden underline xl:inline">Wishlist ({wishlistCount})</span>
      
       </Link>
 
@@ -124,7 +124,7 @@ export function SiteHeader() {
         className="flex items-center gap-2 text-sm text-[#7d6269]"
       >
         <BagIcon className="h-5 w-5 text-[#b78895]" />
-        <span className="hidden xl:inline">Bag (0)</span>
+        <span className="hidden underline xl:inline">Bag (0)</span>
       </Link>
 
     </div>
