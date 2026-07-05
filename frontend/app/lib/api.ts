@@ -4,6 +4,7 @@ import type {
   City,
   Order,
   PaginatedResponse,
+  Category,
   Product,
   Review,
   UserProfile,
@@ -581,4 +582,7 @@ export function getReviewsStats(reviews: AdminReview[]): ReviewsStats {
     five_star_reviews: reviews.filter((review) => review.rating === 5).length,
     one_star_reviews: reviews.filter((review) => review.rating === 1).length,
   };
+}
+export async function getPublicCategories() {
+  return apiFetch<Category[]>("/products/categories/");
 }

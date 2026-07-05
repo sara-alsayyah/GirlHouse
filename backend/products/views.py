@@ -8,6 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import (
     Product,
+    Category,
     Wishlist,
     WishlistItem,
     Review
@@ -17,7 +18,8 @@ from .serializers import (
     ProductSerializer,
     WishlistItemSerializer,
     ReviewSerializer,
-    ReviewCreateSerializer
+    ReviewCreateSerializer,
+    CategorySerializer
 )
 
 
@@ -102,6 +104,10 @@ class ProductReviewsAPIView(APIView):
 
         return Response(serializer.data)
 
+class CategoryListAPIView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = []  
 
 class AddToWishlistAPIView(APIView):
     permission_classes = [IsAuthenticated]

@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts, adminGetCategories, asArray, getStoredAccessToken } from "@/app/lib/api";
+import { getProducts, getPublicCategories, asArray } from "@/app/lib/api";
 import { PageReveal } from "@/app/components/PageReveal";
 import { ProductCard } from "@/app/components/ProductCard";
-import type { Product } from "@/app/lib/types";
-import type { AdminCategory } from "@/app/admin/types/categories";
+import type { Product, Category } from "@/app/lib/types";
 
 type ProductResponse = Awaited<ReturnType<typeof getProducts>>;
 
@@ -25,7 +24,8 @@ export function ProductsClientPage({
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
 
   const [category, setCategory] = useState(initialCategory ?? "");
-  const [categories, setCategories] = useState<AdminCategory[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+
 
   const [price, setPrice] = useState<[number, number]>([0, 500]);
   const [availability, setAvailability] = useState("all");
@@ -38,21 +38,13 @@ export function ProductsClientPage({
   const [openFilters, setOpenFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-/* =========================
-     LOAD CATEGORIES (FIXED)
-  ========================== */
-  useEffect(() => {
-    const token = getStoredAccessToken();
 
-    if (!token) {
-      setCategories([]);
-      return;
-    }
 
-    adminGetCategories(token)
-      .then((data) => setCategories(asArray(data)))
-      .catch(() => setCategories([]));
-  }, []);
+useEffect(() => {
+  getPublicCategories()
+    .then((data) => setCategories(asArray(data)))
+    .catch(() => setCategories([]));
+}, []);
 
   /* ======================
      PRODUCTS FETCH
@@ -90,10 +82,10 @@ export function ProductsClientPage({
 
  
   return (
-    <PageReveal className="mx-auto max-w-7xl px-6 pt-2 pb-28 lg:px-10">
+    <PageReveal className="mx-auto max-w-7xl px-6 pt-2 pb-28 lg:px-10 bg-[#e4e0ce]">
+
       <div className="sticky top-[120px] z-40">
   <div className="flex justify-center gap-8 overflow-x-auto px-4 py-3">
-    {/* All button */}
 
     <button
       onClick={() => {
@@ -136,8 +128,6 @@ export function ProductsClientPage({
       </button>
     ))}
   </div>
-
-  <div className="border-b border-[#b8b8b8]" />
       </div>
 
   {/* HERO */}
@@ -158,64 +148,21 @@ export function ProductsClientPage({
   {/* content */}
   <div className="relative z-10 flex h-full items-center justify-center">
     <div className="text-center text-white">
-      <p className="mb-3 tracking-[0.35em] uppercase text-sm">
-        NEW COLLECTION
-      </p>
-
-      <h1 className="text-6xl font-light">Girl House</h1>
-
-      <p className="mt-4 text-lg">حيث تلتقي الأناقة بالاحتشام</p>
-    </div>
-  </div>
-</section>
-
-  <section className="relative mt-16 lg:mt-24 h-[600px] overflow-hidden">
-    <img
-      src="http://127.0.0.1:8001/media/products/hero.png"
-      alt="Girl House Collection"
-      className="absolute inset-0 h-full w-full object-cover"
-    />
-
-    <div className="absolute inset-0 bg-black/30" />
-
-    <div className="relative z-10 flex h-full items-center justify-center">
-      <div className="text-center text-white">
-
-        <h1 className="text-6xl font-light">
+           <h1 className="brand-font text-6xl font-light shine-gold">
          NEW COLLECTION
         </h1>
 
-        <p className="mt-4 text-lg">
+        <p className="arabic-font mt-4 text-lg">
           حيث تلتقي الأناقة بالاحتشام
         </p>
-      </div>
     </div>
-  </section>
-
-  {/* Rest of page */}
-   
-
-      {/* ======================
-          MOBILE FILTER BUTTON
-      ====================== */}
-      <button
-        onClick={() => setOpenFilters(true)}
-        className="mt-6 w-full rounded-full bg-[#B78895] py-3 text-white lg:hidden"
-      >
-        Filters
-      </button>
+  </div>
+</section>
 
       {/* ======================
           MAIN LAYOUT
       ====================== */}
       <section className="mt-10 grid gap-10 lg:grid-cols-[280px,1fr]">
-
-        {/* SIDEBAR */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-32 rounded-3xl border border-[#F1E5E5] bg-white p-6">
-           
-          </div>
-        </aside>
 
         {/* PRODUCTS */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

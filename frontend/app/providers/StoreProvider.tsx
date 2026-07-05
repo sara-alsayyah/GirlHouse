@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { CartItem, Product, WishlistItem } from "@/app/lib/types";
+import type { CartItem, Category, Product, WishlistItem } from "@/app/lib/types";
 import {
   addCartItem,
   addWishlistItem,
@@ -20,7 +20,9 @@ import {
   removeCartItem,
   removeWishlistItem,
   updateCartItem,
+  getPublicCategories,
 } from "@/app/lib/api";
+
 
 /* ================= TYPES ================= */
 
@@ -39,6 +41,7 @@ type StoreContextValue = {
   isAdmin: boolean;
 
   cartItems: CartItem[];
+  categories: Category[];
   savedForLater: CartItem[];
   wishlistItems: WishlistItem[];
   recentlyViewed: Product[];
@@ -175,6 +178,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     readStoredValue(RECENTLY_VIEWED_KEY, [])
   );
 
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isRecentlyViewedOpen, setIsRecentlyViewedOpen] = useState(false);
@@ -315,6 +319,7 @@ function isWishlisted(productId: number) {
     isAdmin,
 
     cartItems,
+    categories,
     savedForLater,
     wishlistItems,
     recentlyViewed,
