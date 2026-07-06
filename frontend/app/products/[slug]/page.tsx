@@ -16,6 +16,12 @@ import { PageReveal } from "@/app/components/PageReveal";
 import { useStore } from "@/app/providers/StoreProvider";
 import { ProductCard } from "@/app/components/ProductCard";
 import { HeartIcon } from "@/app/components/icons";
+import {
+TruckIcon,
+ShieldCheckIcon,
+CheckBadgeIcon,
+} from "@heroicons/react/24/outline";
+import { CategoriesBar } from "@/app/components/CategoriesBar";
 
 export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
@@ -112,7 +118,6 @@ export default function ProductDetailPage() {
   }
 
  const imageSrc = getProductImageUrl(product);
-  const stockLabel = product.stock > 12 ? "In stock" : product.stock > 0 ? "Low stock" : "Sold out";
   const colorOptionsByCategory: Record<string, { name: string; swatch: string }[]> = {
     women: [
       { name: "Champagne", swatch: "#d7be93" },
@@ -159,173 +164,189 @@ export default function ProductDetailPage() {
   const soldOut = product.stock <= 0;
 
   return (
+    
     <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-16 pt-6">
-      <section className="grid gap-8 lg:grid-cols-[1.05fr,0.95fr]">
-        <div className="luxury-card rounded-[38px] p-5">
-          <div className="overflow-hidden rounded-[30px]">
-            {imageSrc ? (
-              <img
-                ref={imageRef}
-                src={imageSrc}
-                alt={product.name}
-                className="h-[520px] w-full object-contain bg-[linear-gradient(180deg,#fffdf8,#f6eddc)]"
-              />
-            ) : (
-              <div className="h-[520px] bg-gray-100" />
-            )}
+      <div className="sticky top-[70px] z-40 bg-[#e4e0ce]/80 backdrop-blur-md">
+  <CategoriesBar />
+</div>
+  <section className="flex flex-col lg:flex-row gap-0 items-stretch">
+
+  {/* LEFT IMAGE */}
+  <div className="w-full lg:w-[46%]">
+    
+    <div className="sticky top-32 h-[780px] bg-white flex items-center justify-center">
+
+      {imageSrc ? (
+        <img
+          ref={imageRef}
+          src={imageSrc}
+          alt={product.name}
+          className="h-full w-full object-contain"
+        />
+      ) : (
+        <div className="h-full w-full bg-white" />
+      )}
+
+    </div>
+  </div>
+
+  {/* RIGHT CONTENT */}
+  <div className="w-full lg:w-[54%]">
+
+    <div className="h-[780px] bg-white p-10 overflow-y-auto space-y-6">
+
+      <div className="pt-16">
+        <p className="text-xs uppercase tracking-[0.24em] text-[var(--gold-deep)]">
+          {product.category?.name ?? "Curated drop"}
+        </p>
+
+        <h1 className="mt-3 text-5xl font-light tracking-wide">
+          {product.name}
+        </h1>
+
+        <p className="mt-4 leading-7 text-[var(--muted)]">
+          {product.description}
+        </p>
+
+        <p className="mt-6 text-3xl text-[var(--gold-deep)]">
+          {money(product.price)}
+        </p>
+      </div>
+
+      <div className="my-6 border-t border-[#ece3d8]" />
+
+      {/* OPTIONS */}
+      <div className="space-y-7">
+        
+        {/* COLOR */}
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Color</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {colorOptions.map((option) => {
+              const active = activeColor === option.name;
+              return (
+                <button
+                  key={option.name}
+                  type="button"
+                  onClick={() => setSelectedColor(option.name)}
+                  className={`flex items-center gap-3 rounded-full border px-4 py-2 text-sm ${
+                    active
+                      ? "border-[rgba(212,175,55,0.54)] bg-white/90"
+                      : "border-[rgba(143,108,29,0.14)] bg-white/60"
+                  }`}
+                >
+                  <span
+                    className="h-4 w-4 rounded-full border border-black/10"
+                    style={{ backgroundColor: option.swatch }}
+                  />
+                  {option.name}
+                </button>
+              );
+            })}
           </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Current edit</p>
-                <p className="mt-2 text-sm">{activeColor}</p>
-              </div>
-            <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
-              <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Chosen size</p>
-              <p className="mt-2 text-sm">{activeSize}</p>
-              </div>
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Quantity</p>
-                <p className="mt-2 text-sm">{effectiveQuantity} piece{effectiveQuantity > 1 ? "s" : ""}</p>
-              </div>
-            </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="luxury-card rounded-[38px] p-8">
-            <p className="text-xs uppercase tracking-[0.24em] text-[var(--gold-deep)]">
-              {product.category?.name ?? "Curated drop"}
-            </p>
-            <h1 className="section-heading mt-3 text-4xl sm:text-5xl">{product.name}</h1>
-            <p className="mt-4 text-[var(--muted)] leading-7">{product.description}</p>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <span className="rounded-full border px-4 py-2 text-xs">{stockLabel}</span>
-              <span className="rounded-full border px-4 py-2 text-xs">Boutique finish</span>
-              <span className="rounded-full border px-4 py-2 text-xs">Fast dispatch</span>
-            </div>
-
-            <p className="mt-6 text-3xl text-[var(--gold-deep)]">{money(product.price)}</p>
-
-            <div className="mt-8 grid gap-6 lg:grid-cols-2">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Color</p>
-                <div className="mt-3 flex flex-wrap gap-3">
-                  {colorOptions.map((option) => {
-                    const active = activeColor === option.name;
-                    return (
-                      <button
-                        key={option.name}
-                        type="button"
-                        onClick={() => setSelectedColor(option.name)}
-                        className={`flex items-center gap-3 rounded-full border px-4 py-2 text-sm ${
-                          active
-                            ? "border-[rgba(212,175,55,0.54)] bg-white/90"
-                            : "border-[rgba(143,108,29,0.14)] bg-white/60"
-                        }`}
-                      >
-                        <span className="h-4 w-4 rounded-full border border-black/10" style={{ backgroundColor: option.swatch }} />
-                        {option.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Size</p>
-                <div className="mt-3 flex flex-wrap gap-3">
-                  {sizeOptions.map((size) => {
-                    const active = activeSize === size;
-                    return (
-                      <button
-                        key={size}
-                        type="button"
-                        onClick={() => setSelectedSize(size)}
-                        className={`rounded-full border px-4 py-2 text-sm ${
-                          active
-                            ? "border-[rgba(212,175,55,0.54)] bg-white/90 text-[var(--gold-deep)]"
-                            : "border-[rgba(143,108,29,0.14)] bg-white/60"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-3 rounded-full border border-[rgba(143,108,29,0.16)] px-3 py-2">
+        {/* SIZE */}
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Size</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {sizeOptions.map((size) => {
+              const active = activeSize === size;
+              return (
                 <button
+                  key={size}
                   type="button"
-                  onClick={() => setSelectedQuantity((current) => Math.max(1, current - 1))}
-                  disabled={selectedQuantity <= 1}
-                  className="px-2 disabled:cursor-not-allowed disabled:opacity-40"
-                  aria-label="Decrease quantity"
+                  onClick={() => setSelectedSize(size)}
+                  className={`rounded-full border px-4 py-2 text-sm ${
+                    active
+                      ? "border-[rgba(212,175,55,0.54)] bg-white/90 text-[var(--gold-deep)]"
+                      : "border-[rgba(143,108,29,0.14)] bg-white/60"
+                  }`}
                 >
-                  -
+                  {size}
                 </button>
-                <span className="min-w-8 text-center text-sm">{selectedQuantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedQuantity((current) => Math.min(product.stock, current + 1))}
-                  disabled={soldOut || selectedQuantity >= product.stock}
-                  className="px-2 disabled:cursor-not-allowed disabled:opacity-40"
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-              </div>
-              <p className="text-sm text-[var(--muted)]">
-                Ready to add: <span className="font-medium text-[var(--foreground)]">{effectiveQuantity}</span>
-              </p>
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-4">
-              <motion.button
-                type="button"
-                whileTap={{ scale: 0.97 }}
-                onClick={() => addProductToCart(product, imageRef.current, effectiveQuantity)}
-                disabled={soldOut}
-                className="gold-button rounded-full px-6 py-3 text-sm uppercase disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {soldOut ? "Sold out" : `Add ${effectiveQuantity > 1 ? `${effectiveQuantity} pieces` : "to cart"}`}
-              </motion.button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  void toggleWishlist(product);
-                  openWishlist();
-                }}
-                className="rounded-full border px-6 py-3 text-sm uppercase"
-                aria-label="Save to wishlist"
-              >
-                <HeartIcon className="h-4 w-4" />
-              </button>
-
-              <Link href="/checkout" className="rounded-full border px-6 py-3 text-sm uppercase">
-                Checkout
-              </Link>
-            </div>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Estimated delivery</p>
-                <p className="mt-2 text-sm">3-6 business days</p>
-              </div>
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Returns</p>
-                <p className="mt-2 text-sm">Easy return window on unused items</p>
-              </div>
-              <div className="rounded-[22px] border border-[rgba(143,108,29,0.14)] bg-white/64 p-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Secure promise</p>
-                <p className="mt-2 text-sm">Protected checkout and tracking</p>
-              </div>
-            </div>
+              );
+            })}
           </div>
+        </div>
+      </div>
 
+      {/* QUANTITY */}
+      <div className="mt-8 flex items-center gap-4">
+        <div className="flex items-center gap-3 rounded-full border px-3 py-2">
+          <button
+            onClick={() => setSelectedQuantity((c) => Math.max(1, c - 1))}
+          >
+            -
+          </button>
+
+          <span>{selectedQuantity}</span>
+
+          <button
+            onClick={() =>
+              setSelectedQuantity((c) => Math.min(product.stock, c + 1))
+            }
+          >
+            +
+          </button>
+        </div>
+
+        <p className="text-sm text-[var(--muted)]">
+          Ready: <span className="font-medium">{selectedQuantity}</span>
+        </p>
+      </div>
+
+      {/* ACTIONS */}
+      <div className="mt-6 flex flex-wrap gap-4">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() =>
+            addProductToCart(product, imageRef.current, selectedQuantity)
+          }
+          className="gold-button rounded-full px-6 py-3 text-sm uppercase"
+        >
+          Add to cart
+        </motion.button>
+
+        <button
+          onClick={() => {
+            void toggleWishlist(product);
+            openWishlist();
+          }}
+          className="rounded-full border px-6 py-3 text-sm uppercase"
+        >
+          <HeartIcon className="h-4 w-4" />
+        </button>
+
+        <Link href="/checkout" className="rounded-full border px-6 py-3 text-sm uppercase">
+          Checkout
+        </Link>
+      </div>
+
+      {/* DELIVERY GRID */}
+      <div className="mt-10 grid grid-cols-3 gap-6">
+        <div className="text-center">
+          <TruckIcon className="mx-auto mb-2 h-7 w-7 text-[#c9a96e]" />
+          <p className="text-sm font-medium">Delivery</p>
+          <p className="text-xs text-gray-500">3–6 days</p>
+        </div>
+
+        <div className="text-center">
+          <ShieldCheckIcon className="mx-auto mb-2 h-7 w-7 text-[#c9a96e]" />
+          <p className="text-sm font-medium">Secure</p>
+          <p className="text-xs text-gray-500">Protected checkout</p>
+        </div>
+
+        <div className="text-center">
+          <CheckBadgeIcon className="mx-auto mb-2 h-7 w-7 text-[#c9a96e]" />
+          <p className="text-sm font-medium">Authentic</p>
+          <p className="text-xs text-gray-500">Verified quality</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
           <div className="luxury-card rounded-[38px] p-8">
             <p className="text-xs uppercase text-[var(--muted)]">Reviews ({reviews.length})</p>
             <div className="mt-5 space-y-4">
@@ -343,8 +364,7 @@ export default function ProductDetailPage() {
               )}
             </div>
           </div>
-        </div>
-      </section>
+ 
 
       {related.length > 0 ? (
         <section className="mt-12">

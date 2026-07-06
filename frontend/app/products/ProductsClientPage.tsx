@@ -5,6 +5,7 @@ import { getProducts, getPublicCategories, asArray } from "@/app/lib/api";
 import { PageReveal } from "@/app/components/PageReveal";
 import { ProductCard } from "@/app/components/ProductCard";
 import type { Product, Category } from "@/app/lib/types";
+import { CategoriesBar } from "@/app/components/CategoriesBar";
 
 type ProductResponse = Awaited<ReturnType<typeof getProducts>>;
 
@@ -35,7 +36,6 @@ export function ProductsClientPage({
   const [hasNext, setHasNext] = useState(false);
   const [hasPrev, setHasPrev] = useState(false);
 
-  const [openFilters, setOpenFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,53 +83,10 @@ useEffect(() => {
  
   return (
     <PageReveal className="mx-auto max-w-7xl px-6 pt-2 pb-28 lg:px-10 bg-[#e4e0ce]">
+      <div className="sticky top-[130px] z-30">
 
-      <div className="sticky top-[120px] z-40">
-  <div className="flex justify-center gap-8 overflow-x-auto px-4 py-3">
-
-    <button
-      onClick={() => {
-        setCategory("");
-        setPage(1);
-      }}
-      className={`brand-font relative whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors ${
-        category === ""
-          ? "text-[#B78895]"
-          : "text-[#777] hover:text-[#B78895]"
-      }`}
-    >
-      All
-
-      {category === "" && (
-        <span className="absolute bottom-0 left-0 h-[2px] w-full bg-[#B78895]" />
-      )}
-    </button>
-
-    {/* Categories */}
-
-    {categories.map((cat) => (
-      <button
-        key={cat.id}
-        onClick={() => {
-          setCategory(cat.slug);
-          setPage(1);
-        }}
-        className={`brand-font relative whitespace-nowrap px-4 py-3 text-sm transition-colors ${
-          category === cat.slug
-            ? "text-[#8f727a]"
-            : "text-[#000] hover:text-[#B78895]"
-        }`}
-      >
-        {cat.name}
-
-        {category === cat.slug && (
-          <span className="absolute bottom-0 left-0 h-[2px] w-full bg-[#B78895]" />
-        )}
-      </button>
-    ))}
-  </div>
+      <CategoriesBar />
       </div>
-
   {/* HERO */}
     <section className="relative mt-16 lg:mt-24 h-[600px] overflow-hidden">
   <video
