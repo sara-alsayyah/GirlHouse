@@ -111,7 +111,7 @@ export function SiteHeader() {
         <span className="hidden underline xl:inline">Account</span>
       </Link>
        <Link
-        href={"/whislist"}
+        href={"/wishlist"}
         className="flex items-center gap-2 text-sm text-[#7d6269]"
       >
         <HeartIcon className="h-5 w-5 text-[#b78895]" />

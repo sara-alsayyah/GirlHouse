@@ -81,6 +81,7 @@ type StoreContextValue = {
     imageElement?: HTMLImageElement | null,
     quantity?: number
   ) => Promise<void>;
+  quickAddProduct: (product: Product) => Promise<void>;
 
   changeQuantity: (itemId: number, quantity: number) => Promise<void>;
   deleteItem: (itemId: number) => Promise<void>;
@@ -105,6 +106,7 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 const SAVED_FOR_LATER_KEY = "girlhouse-saved-later";
 const RECENTLY_VIEWED_KEY = "girlhouse-recently-viewed";
 const THEME_MODE_KEY = "girlhouse-theme-mode";
+const WISHLIST_KEY = "girlhouse-wishlist";
 
 /* ================= HELPERS ================= */
 
@@ -174,6 +176,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     readStoredValue(SAVED_FOR_LATER_KEY, [])
   );
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [guestWishlist, setGuestWishlist] = useState<WishlistItem[]>(() =>
+  readStoredValue(WISHLIST_KEY, [])
+);
+useEffect(() => {
+  localStorage.setItem(WISHLIST_KEY, JSON.stringify(guestWishlist));
+}, [guestWishlist]);
+
   const [recentlyViewed, setRecentlyViewed] = useState<Product[]>(() =>
     readStoredValue(RECENTLY_VIEWED_KEY, [])
   );
@@ -253,18 +262,47 @@ async function fetchUser(access: string) {
       setUser(null);
     }
   }
+async function syncGuestWishlist(access: string) {
+  const storedWishlist = readStoredValue<WishlistItem[]>(WISHLIST_KEY, []);
 
-  function saveToken(access: string, refresh?: string | null) {
-    localStorage.setItem("access", access);
-    if (refresh) localStorage.setItem("refresh", refresh);
+  if (storedWishlist.length === 0) return;
 
-    setToken(access);
+  try {
+    for (const item of storedWishlist) {
+      try {
+        await addWishlistItem(access, item.product.id);
+      } catch {
+        console.log("Already exists:", item.product.id);
+      }
+    }
 
-    void fetchUser(access);
-    void refreshCart(access);
-    void refreshWishlist(access);
+    await refreshWishlist(access);
+
+    setGuestWishlist([]);
+    localStorage.removeItem(WISHLIST_KEY);
+
+  } catch (err) {
+    console.error("Failed to sync guest wishlist", err);
+  }
+}
+
+async function saveToken(access: string, refresh?: string | null) {
+  localStorage.setItem("access", access);
+
+  if (refresh) {
+    localStorage.setItem("refresh", refresh);
   }
 
+  setToken(access);
+
+  await fetchUser(access);
+
+  await syncGuestWishlist(access);
+
+  await refreshCart(access);
+
+  await refreshWishlist(access);
+}
   function logout() {
     clearAuthState();
     setSavedForLater([]);
@@ -280,28 +318,31 @@ async function fetchUser(access: string) {
   /* ================= VALUE ================= */
 
 async function toggleWishlist(product: Product) {
-  const token = localStorage.getItem("access");
+
+ const exists = isWishlisted(product.id);
 
   if (!token) {
-    setStatusMessage("Please login to add items to wishlist");
+    setGuestWishlist((prev) => {
+      if (exists) {
+        return prev.filter((i) => i.product.id !== product.id);
+      }
 
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 1200);
+      return [
+        ...prev,
+        {
+          id: product.id,
+          product,
+        },
+      ];
+    });
 
     return;
   }
 
-  const exists = wishlistItems.some(
-    (i) => i.product.id === product.id
-  );
-
   try {
     if (exists) {
       await removeWishlistItem(token, product.id);
-      setWishlistItems((prev) =>
-        prev.filter((i) => i.product.id !== product.id)
-      );
+      await refreshWishlist(token);
     } else {
       await addWishlistItem(token, product.id);
       await refreshWishlist(token);
@@ -310,8 +351,59 @@ async function toggleWishlist(product: Product) {
     console.error(err);
   }
 }
+async function addProductToCart(
+  product: Product,
+  imageElement?: HTMLImageElement | null,
+  quantity: number = 1
+) {
+  const activeToken = localStorage.getItem("access");
+
+  if (!activeToken) {
+    setStatusMessage("Please login first");
+    return;
+  }
+
+  try {
+    await addCartItem(
+      activeToken,
+      product.id,
+      quantity
+    );
+
+    const updatedCart = await getCart(activeToken);
+
+    setCartItems(updatedCart);
+
+    setStatusMessage(`${product.name} added to cart`);
+
+  } catch (error) {
+    console.error("Cart error:", error);
+    throw error;
+  }
+}
+async function quickAddProduct(product: Product) {
+  try {
+    await addProductToCart(product, null, 1);
+
+    setStatusMessage(`${product.name} added to cart`);
+
+    setTimeout(() => {
+      setStatusMessage(null);
+    }, 2000);
+
+  } catch (error) {
+    console.error("Quick add failed:", error);
+
+    setStatusMessage("Could not add product");
+  }
+}
+
 function isWishlisted(productId: number) {
-  return wishlistItems.some((i) => i.product.id === productId);
+  if (token) {
+    return wishlistItems.some((i) => i.product.id === productId);
+  }
+
+  return guestWishlist.some((i) => i.product.id === productId);
 }
   const value: StoreContextValue = {
     token,
@@ -321,11 +413,13 @@ function isWishlisted(productId: number) {
     cartItems,
     categories,
     savedForLater,
-    wishlistItems,
+    wishlistItems: token ? wishlistItems : guestWishlist,
     recentlyViewed,
 
     cartCount: cartItems.reduce((s, i) => s + i.quantity, 0),
-    wishlistCount: wishlistItems.length,
+    wishlistCount: token
+  ? wishlistItems.length
+  : guestWishlist.length,
     subtotal: moneySum(cartItems),
 
     isCartOpen,
@@ -341,6 +435,7 @@ function isWishlisted(productId: number) {
 
     openCart: () => setIsCartOpen(true),
     closeCart: () => setIsCartOpen(false),
+    
 
     openWishlist: () => setIsWishlistOpen(true),
     closeWishlist: () => setIsWishlistOpen(false),
@@ -361,7 +456,57 @@ function isWishlisted(productId: number) {
       return refreshWishlist(t);
     },
 
-    addProductToCart: async () => {},
+   addProductToCart: async (
+  product: Product,
+  imageElement?: HTMLImageElement | null,
+  quantity = 1
+) => {
+
+  const activeToken = localStorage.getItem("access");
+
+  if (!activeToken) {
+    setStatusMessage("Please login to add products to cart");
+
+    setTimeout(() => {
+      setStatusMessage(null);
+    }, 2000);
+
+    return;
+  }
+
+  try {
+
+    await addCartItem(
+      activeToken,
+      product.id,
+      quantity
+    );
+    await refreshCart(activeToken);
+
+    setCartPulse((value) => value + 1);
+    setStatusMessage(
+      `${product.name} added to cart`
+    );
+
+    setTimeout(() => {
+      setStatusMessage(null);
+    }, 2000);
+
+
+  } catch(error) {
+
+    console.error(
+      "Add product to cart failed:",
+      error
+    );
+
+
+    setStatusMessage(
+      "Could not add product"
+    );
+  }
+},
+   quickAddProduct,
     changeQuantity: async () => {},
     deleteItem: async () => {},
 

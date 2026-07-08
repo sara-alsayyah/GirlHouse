@@ -15,12 +15,12 @@ export function ProductCard({
   product: Product | null | undefined;
   featured?: boolean;
 }) {
-  const {
-    addProductToCart,
-    toggleWishlist,
-    isWishlisted,
-    setQuickViewProduct,
-  } = useStore();
+const {
+  addProductToCart,
+  toggleWishlist,
+  isWishlisted,
+  setQuickViewProduct,
+} = useStore();
 
   const imageRef = useRef<HTMLImageElement | null>(null);
   const imageSrc = getProductImageUrl(product);
@@ -34,7 +34,7 @@ export function ProductCard({
 
     try {
       setLoading(true);
-      await addProductToCart(product, imageRef.current ?? undefined);
+      await addProductToCart(product, null, 1);
     } catch (err) {
       console.error("Quick add failed:", err);
     } finally {
