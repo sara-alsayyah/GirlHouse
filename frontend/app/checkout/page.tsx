@@ -123,7 +123,10 @@ export default function CheckoutPage() {
   return (
     <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6 lg:px-10">
       <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
-        <p className="text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">
+        <Link href="/cart" className="inline-flex text-sm text-[var(--gold-deep)] transition hover:text-[#956773]">
+          ← Back to bag
+        </Link>
+        <p className="mt-5 text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">
           Secure checkout
         </p>
         <h1 className="section-heading mt-4 text-5xl">
@@ -148,34 +151,6 @@ export default function CheckoutPage() {
 
       <section className="mt-8 grid gap-8 lg:grid-cols-[1fr,420px]">
         <div className="space-y-6">
-          <div className="luxury-card rounded-[34px] p-6">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
-                  Express options
-                </p>
-                <h2 className="mt-2 font-[var(--font-display)] text-3xl">
-                  Fast lane checkout
-                </h2>
-              </div>
-              <div className="rounded-full border border-[rgba(143,108,29,0.14)] bg-white/72 px-4 py-2 text-xs uppercase tracking-[0.16em] text-[var(--gold-deep)]">
-                Encrypted session
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              {["PayPal", "Apple Pay", "Saved card"].map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  className="rounded-[20px] border border-[rgba(143,108,29,0.14)] bg-white/72 px-4 py-4 text-sm"
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="luxury-card rounded-[34px] p-6">
             <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
               Contact information

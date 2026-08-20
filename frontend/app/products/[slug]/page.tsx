@@ -169,12 +169,12 @@ export default function ProductDetailPage() {
       <div className="sticky top-[70px] z-40 bg-[#e4e0ce]/80 backdrop-blur-md">
   <CategoriesBar />
 </div>
-  <section className="flex flex-col lg:flex-row gap-0 items-stretch">
+  <section className="flex flex-col items-stretch gap-0 lg:flex-row">
 
   {/* LEFT IMAGE */}
   <div className="w-full lg:w-[46%]">
     
-    <div className="sticky top-32 h-[780px] bg-white flex items-center justify-center">
+    <div className="flex h-[min(78vh,620px)] items-center justify-center bg-white lg:sticky lg:top-32 lg:h-[780px]">
 
       {imageSrc ? (
         <img
@@ -193,10 +193,13 @@ export default function ProductDetailPage() {
   {/* RIGHT CONTENT */}
   <div className="w-full lg:w-[54%]">
 
-    <div className="h-[780px] bg-white p-10 overflow-y-auto space-y-6">
+    <div className="space-y-6 bg-white p-6 sm:p-10 lg:h-[780px] lg:overflow-y-auto">
 
-      <div className="pt-16">
-        <p className="text-xs uppercase tracking-[0.24em] text-[var(--gold-deep)]">
+      <div className="pt-2 sm:pt-8 lg:pt-16">
+        <Link href="/products" className="inline-flex text-sm text-[var(--gold-deep)] transition hover:text-[#956773]">
+          ← Back to collection
+        </Link>
+        <p className="mt-6 text-xs uppercase tracking-[0.24em] text-[var(--gold-deep)]">
           {product.category?.name ?? "Curated drop"}
         </p>
 
@@ -318,13 +321,13 @@ export default function ProductDetailPage() {
           <HeartIcon className="h-4 w-4" />
         </button>
 
-        <Link href="/checkout" className="rounded-full border px-6 py-3 text-sm uppercase">
-          Checkout
+        <Link href="/cart" className="rounded-full border px-6 py-3 text-sm uppercase">
+          View bag
         </Link>
       </div>
 
       {/* DELIVERY GRID */}
-      <div className="mt-10 grid grid-cols-3 gap-6">
+      <div className="mt-10 grid gap-6 sm:grid-cols-3">
         <div className="text-center">
           <TruckIcon className="mx-auto mb-2 h-7 w-7 text-[#c9a96e]" />
           <p className="text-sm font-medium">Delivery</p>

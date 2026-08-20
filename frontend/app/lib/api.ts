@@ -323,6 +323,16 @@ export const getHeroSlides = async () => {
   const res = await fetch(`${API_BASE}/dashboard/hero-slides`);
   return res.json();
 };
+export type PromotionBanner = { is_enabled: boolean; eyebrow: string; headline: string; button_label: string; button_url: string };
+export async function getPromotionBanner() {
+  return apiFetch<PromotionBanner>("/dashboard/promotion/");
+}
+export async function adminGetPromotionBanner(token: string) {
+  return apiFetch<PromotionBanner>("/dashboard/promotion/manage/", { token });
+}
+export async function adminUpdatePromotionBanner(token: string, payload: Partial<PromotionBanner>) {
+  return apiFetch<PromotionBanner>("/dashboard/promotion/manage/", { method: "PATCH", token, body: JSON.stringify(payload) });
+}
 export async function adminGetProducts(token: string) {
   return apiFetch<PaginatedResponse<AdminProduct> | AdminProduct[]>(
     "/admin/products/products/",

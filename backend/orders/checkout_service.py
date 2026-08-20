@@ -44,6 +44,9 @@ class CheckoutService:
             if not product:
                 return {"error": "Product not found"}
 
+            if not product.is_active:
+                return {"error": f"{product.name} is no longer available"}
+
             if item.quantity <= 0:
                 return {"error": f"Invalid quantity for {product.name}"}
 
@@ -64,7 +67,7 @@ class CheckoutService:
 
         if coupon_code:
             try:
-                coupon_obj = Coupon.objects.get(
+                coupon_obj = Coupon.objects.select_for_update().get(
                     code__iexact=coupon_code,
                     active=True
                 )

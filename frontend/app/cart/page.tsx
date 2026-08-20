@@ -16,8 +16,8 @@ export default function CartPage() {
   const total = numericSubtotal + shipping + taxes;
 
   return (
-    <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6 lg:px-10">
-      <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
+    <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-10 pt-10 sm:px-6 bg-white/100">
+      <section className="luxury-card  px-6 py-8 sm:px-10">
         <p className="text-xs uppercase tracking-[0.36em] text-[var(--gold-deep)]">Shopping bag</p>
         <h1 className="section-heading mt-4 text-5xl">Review your bag before checkout.</h1>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -83,7 +83,7 @@ export default function CartPage() {
             <div className="luxury-card rounded-[34px] p-10 text-center">
               <p className="font-[var(--font-display)] text-3xl">Your cart is empty.</p>
               <p className="mt-3 text-sm leading-7 text-[var(--muted)]">Browse the collection and add products to begin your checkout flow.</p>
-              <Link href="/products" className="gold-button mt-6 inline-flex rounded-full px-6 py-3 text-sm uppercase tracking-[0.18em]">
+              <Link href="/products" className="gold-button mt-6 inline-flex px-6 py-3 text-sm uppercase tracking-[0.18em]">
                 Explore products
               </Link>
             </div>
@@ -118,6 +118,9 @@ export default function CartPage() {
 
           <Link href="/checkout" className="gold-button mt-8 flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]">
             Continue to checkout
+          </Link>
+          <Link href="/products" className="mt-4 flex items-center justify-center rounded-full border border-[rgba(166,122,122,0.22)] px-5 py-3 text-sm text-[var(--muted)] transition hover:bg-[#f9f0f1]">
+            Continue shopping
           </Link>
         </aside>
       </section>

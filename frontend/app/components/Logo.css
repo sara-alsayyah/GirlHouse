@@ -15,8 +15,8 @@
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.4em;  
-  color: #fff;
-  line-height: 2;          
+  color: #a87b88;
+  line-height: 1.3;          
 }
 
 .shop-line {
@@ -31,7 +31,7 @@
   font-family: "Allura", cursive;
   font-size: 0.95rem;     
   line-height: 0.5;
-  color: #fff;
+  color: #b78895;
 }
 
 
@@ -41,9 +41,9 @@
     background: linear-gradient(
         90deg,
         transparent 0%,
-        #c89b2c 20%,
+        #a87b88 20%,
         #f4e28a 50%,
-        #d4af37 75%,
+        #b78895 75%,
         transparent 100%
     );
 }

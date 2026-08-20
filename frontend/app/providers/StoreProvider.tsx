@@ -16,15 +16,13 @@ import {
   addWishlistItem,
   getCart,
   getWishlist,
+  getProfile,
   money,
   removeCartItem,
   removeWishlistItem,
   updateCartItem,
   getPublicCategories,
 } from "@/app/lib/api";
-
-
-/* ================= TYPES ================= */
 
 type User = {
   id: number;
@@ -34,11 +32,13 @@ type User = {
   is_superuser?: boolean;
 } | null;
 
+
 type StoreContextValue = {
   token: string | null;
 
   user: User;
   isAdmin: boolean;
+  mounted: boolean;
 
   cartItems: CartItem[];
   categories: Category[];
@@ -159,9 +159,20 @@ function uniqueRecentProducts(items: Product[]) {
 /* ================= PROVIDER ================= */
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() =>
-    typeof window !== "undefined" ? localStorage.getItem("access") : null
-  );
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+  const access = localStorage.getItem("access");
+
+  if (access) {
+    setToken(access);
+  }
+}, []);
+
+  const [mounted, setMounted] = useState(false);
+
+useEffect(() => {
+  setMounted(true);
+}, []);
 
   const [user, setUser] = useState<User>(() => {
     if (typeof window === "undefined") return null;
@@ -170,6 +181,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   });
 
   const isAdmin = !!(user && (user.is_admin || user.is_staff || user.is_superuser));
+  useEffect(() => {
+  setMounted(true);
+}, []);
+ 
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [savedForLater, setSavedForLater] = useState<CartItem[]>(() =>
@@ -245,23 +260,14 @@ useEffect(() => {
 
 async function fetchUser(access: string) {
   try {
-      const res = await fetch("http://localhost:8001/api/users/profile/", {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+    const data = await getProfile(access);
 
-    if (!res.ok) {
-      setUser(null);
-      return;
-    }
-
-    const data = await res.json();
-
-      setUser(data);
-      localStorage.setItem("user", JSON.stringify(data));
-    } catch {
-      setUser(null);
-    }
+    setUser(data);
+    localStorage.setItem("user", JSON.stringify(data));
+  } catch {
+    setUser(null);
   }
+}
 async function syncGuestWishlist(access: string) {
   const storedWishlist = readStoredValue<WishlistItem[]>(WISHLIST_KEY, []);
 
@@ -409,6 +415,7 @@ function isWishlisted(productId: number) {
     token,
     user,
     isAdmin,
+    mounted,
 
     cartItems,
     categories,
@@ -506,9 +513,35 @@ function isWishlisted(productId: number) {
     );
   }
 },
-   quickAddProduct,
-    changeQuantity: async () => {},
-    deleteItem: async () => {},
+    quickAddProduct,
+    changeQuantity: async (itemId, quantity) => {
+      const activeToken = localStorage.getItem("access");
+      if (!activeToken) return;
+
+      try {
+        if (quantity <= 0) {
+          await removeCartItem(activeToken, itemId);
+          setStatusMessage("Item removed from your bag");
+        } else {
+          await updateCartItem(activeToken, itemId, quantity);
+        }
+        await refreshCart(activeToken);
+      } catch (error) {
+        setStatusMessage(getErrorMessage(error, "We could not update your bag."));
+      }
+    },
+    deleteItem: async (itemId) => {
+      const activeToken = localStorage.getItem("access");
+      if (!activeToken) return;
+
+      try {
+        await removeCartItem(activeToken, itemId);
+        await refreshCart(activeToken);
+        setStatusMessage("Item removed from your bag");
+      } catch (error) {
+        setStatusMessage(getErrorMessage(error, "We could not remove this item."));
+      }
+    },
 
     saveItemForLater: () => {},
     restoreSavedItem: async () => {},

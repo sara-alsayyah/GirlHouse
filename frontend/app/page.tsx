@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { asArray, getHeroSlides, getProducts, getProductImageUrl, money, resolveMediaUrl } from "@/app/lib/api";
+import { asArray, getHeroSlides, getProducts, getProductImageUrl, getPromotionBanner, money, resolveMediaUrl, type PromotionBanner } from "@/app/lib/api";
 import type { Product } from "@/app/lib/types";
 import { PageReveal } from "@/app/components/PageReveal";
 import {
@@ -35,32 +35,34 @@ export default function HomePage() {
     }
   };
   const [products, setProducts] = useState<Product[]>([]);
+  const [promotion, setPromotion] = useState<PromotionBanner | null>(null);
 
   useEffect(() => {
     getProducts("?page=1")
       .then((response) => setProducts(asArray(response)))
       .catch(() => setProducts([]));
   }, []);
+  useEffect(() => { getPromotionBanner().then(setPromotion).catch(() => setPromotion(null)); }, []);
 
   const mostPopular = products.slice(0, 5);
 
   const featuredCategories = [
-    { name: "وصل حديثاً",    nameEn: "New Arrivals", slug: "new" },
-    { name: "فساتين",        nameEn: "Dresses",     slug: "dresses" },
-    { name: "عبايات",        nameEn: "Abaya",      slug: "abaya" },
-    { name: "تنانير",   nameEn: "Skirts", slug: "skirts" },
-    { name: " اطقم", nameEn: "Sets", slug: "sets" },
-    { name: "حجاب ",    nameEn: "Hijab", slug: "hijab" },
-    { name: "جزادين ",    nameEn: "Bags", slug: "bags" },
+    { name: "New Arrivals", slug: "new" },
+    { name: "Dresses",        nameEn: "",     slug: "dresses" },
+    { name: "Abaya",        nameEn: "Abaya",      slug: "abaya" },
+    { name: "Skirts",   nameEn: "Skirts", slug: "skirts" },
+    { name: "Sets", nameEn: "Sets", slug: "sets" },
+    { name: "Hijab",    nameEn: "Hijab", slug: "hijab" },
+    { name: "Bags",    nameEn: "Bags", slug: "bags" },
 
 
   ];
 
- const trustBadges = [
-  { icon: TruckIcon, ar: "شحن سريع", sub: "لكافة المناطق" },
-  { icon: ShieldCheckIcon, ar: "دفع آمن", sub: "طرق دفع متعددة وآمنة" },
-  { icon: ArrowUturnLeftIcon, ar: "إرجاع سهل", sub: "سياسة إرجاع مرنة" },
-  { icon: StarIcon, ar: "جودة عالية", sub: "خامات مختارة بعناية" },
+const trustBadges = [
+  { icon: TruckIcon, ar: "Fast Shipping", sub: "Nationwide Delivery" },
+  { icon: ShieldCheckIcon, ar: "Secure Payment", sub: "Multiple Safe Payment Methods" },
+  { icon: ArrowUturnLeftIcon, ar: "Easy Returns", sub: "Flexible Return Policy" },
+  { icon: StarIcon, ar: "Premium Quality", sub: "Carefully Selected Fabrics" },
 ];
 
 
@@ -86,16 +88,16 @@ useEffect(() => {
 
   const { toggleWishlist, isWishlisted } = useStore();
 const currentSlide = slides?.[current] ?? null;
+const [showAllCategories, setShowAllCategories] = useState(false);
   return (
     <PageReveal className="page-shell pb-2 ">
 
       {/* ─── HERO ─────────────────────────────────────────────── */}
-      <section className="relative w-full">
+      <section className="relative w-full ">
         <div
           className="relative w-full overflow-hidden"
           style={{ height: "min(90vh, 780px)", minHeight: 560 }}
         >
-          {/* bg gradient fallback */}
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(120deg,#9d7f8c 0%,#c4a0a8 100%)" }}
@@ -168,8 +170,8 @@ backgroundImage: currentSlide?.image
 
   <span className="absolute inset-0 rounded-md shadow-[0_0_25px_rgba(201,169,110,0.35)]" />
 
-  <span className="arabic-font relative z-10">
-    تسوقي الآن →
+  <span className="brand-font relative z-10">
+   SHOP NOW →
   </span>
 </Link>
             </motion.div>
@@ -200,6 +202,51 @@ backgroundImage: currentSlide?.image
   : "01 ── 03"}
           </p>
         </div>
+</section>
+
+      {promotion?.is_enabled && (
+        <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-10">
+          <div
+            className="border border-[#ead9dd] bg-cover bg-center px-5 py-7 text-center sm:px-10"
+            style={{ backgroundImage: "url('/discount-bg.jpg')" }}
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#79515b]">{promotion.eyebrow}</p>
+            <h2 className="brand-font mt-2 text-2xl uppercase tracking-wide text-[#49343a] sm:text-4xl">{promotion.headline}</h2>
+            <Link href={promotion.button_url || "/products"} className="mt-4 inline-block bg-[#a87584] px-7 py-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#79515b]">{promotion.button_label}</Link>
+          </div>
+        </section>
+      )}
+        {/* ─── TRUST BADGES ─────────────────────────────────────── */}
+      <section style={{ background: "#FAF5F2" }}>
+        <div className="mx-auto max-w-7xl px-2 py-2">
+          <div className="pt-7 text-center">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#956773]">The Girl House promise</p>
+            <h2 className="brand-font mt-2 text-2xl tracking-wide text-[#49343a] sm:text-3xl">Why choose Girl House?</h2>
+            <span className="mt-3 inline-block h-px w-8 bg-[#c9a96e]" />
+          </div>
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+            {trustBadges.map((b) => {
+  const Icon = b.icon;
+
+  return (
+    <div
+      key={b.ar}
+      className="flex flex-col items-center gap-2 text-center"
+    >
+      <Icon className="h-6 w-6 text-[#C7A3AE]" />
+
+      <p className="brand-font text-sm font-medium text-[#3D3136]" dir="rtl">
+        {b.ar}
+      </p>
+
+      <p className="brand-font text-xs text-[#8A7A7D]" dir="rtl">
+        {b.sub}
+      </p>
+    </div>
+  );
+})}
+          </div>
+        </div>
       </section>
 
       {/* ─── BROWSE CATEGORIES ────────────────────────────────── */}
@@ -208,16 +255,18 @@ backgroundImage: currentSlide?.image
         <div className="mb-10 flex items-center justify-center gap-4">
           <span className="h-px w-16 bg-[linear-gradient(90deg,transparent_0%,#c89b2c_20%,#f4e28a_50%,#d4af37_75%,transparent_100%)]" />
           <p
-            className="arabic-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
+            className="brand-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
             dir="rtl"
           >
-            تسوقي من مجموعاتنا
+           BROWSE OUR COLLECTIONS
           </p>
           <span className="h-px w-20 bg-[linear-gradient(90deg,transparent_0%,#c89b2c_20%,#f4e28a_50%,#d4af37_75%,transparent_100%)]" />
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
-         {featuredCategories.map((cat, i) => {
+        {featuredCategories
+  .slice(0, showAllCategories ? featuredCategories.length : 3)
+  .map((cat, i) => {
 const categoryProducts =
   cat.slug === "new"
     ? products
@@ -243,7 +292,6 @@ const imageSrc = getProductImageUrl(categoryProducts[0]);
                       : "linear-gradient(160deg,#c4a0a8 0%,#9a7880 100%)",
                 }}
               />
-              {/* product image if we have enough products */}
               {imageSrc && (
                 <img
                   src={imageSrc}
@@ -260,7 +308,7 @@ const imageSrc = getProductImageUrl(categoryProducts[0]);
                 }}
               />
               <p
-                className="arabic-font absolute bottom-10 w-full font-medium text-center text-base text-amber-50"
+                className="brand-font absolute bottom-10 w-full font-medium text-center text-base text-white"
                 dir="rtl"
               >
                 {cat.name}
@@ -272,30 +320,30 @@ const imageSrc = getProductImageUrl(categoryProducts[0]);
 
         {/* "Show all" button */}
         <div className="mt-8 flex justify-center">
-          <Link
-            href="/products"
-            className="arabic-font border px-7 py-2.5 text-sm tracking-widest text-[#9a7060] transition hover:bg-[#f5ece8]"
-            style={{ borderColor: "#c9a96e" }}
-            dir="rtl"
-          >
-            ← عرض الكل
-          </Link>
+          <button
+  onClick={() => setShowAllCategories((prev) => !prev)}
+  className="arabic-font border px-7 py-2.5 text-sm tracking-widest text-[#9a7060] transition hover:bg-[#f5ece8]"
+  style={{ borderColor: "#c9a96e" }}
+  dir="rtl"
+>
+  {showAllCategories ? "↑ Show Less" : " Show All"}
+</button>
+
         </div>
       </section>
 
       {/* ─── MOST POPULAR ─────────────────────────────────────── */}
       <section
         className="py-14"
-        style={{background: "radial-gradient(circle at top, #f3c85f1a, #0000 30%)" }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="mb-10 flex items-center justify-center gap-4">
             <span className="h-px w-16 bg-[#c9a96e]" />
             <p
-              className="arabic-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
+              className="brand-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
               dir="rtl"
             >
-              الأكثر مبيعاً
+             NEW ARRIVALS
             </p>
             <span className="h-px w-16 bg-[#c9a96e]" />
           </div>
@@ -374,8 +422,6 @@ const imageSrc = getProductImageUrl(categoryProducts[0]);
               <p className="text-sm font-semibold text-[#c9a96e]">
                 {product ? money(product.price) : "—"}
               </p>
-
-              <span className="text-[10px] text-[#c9a96e]">★★★★★</span>
             </div>
           </div>
         </motion.div>
@@ -386,43 +432,17 @@ const imageSrc = getProductImageUrl(categoryProducts[0]);
         </div>
       </section>
 
-      {/* ─── TRUST BADGES ─────────────────────────────────────── */}
-      <section style={{ background: "#956773" }}>
-        <div className="mx-auto max-w-7xl px-4 py-4">
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {trustBadges.map((b) => {
-  const Icon = b.icon;
-
-  return (
-    <div
-      key={b.ar}
-      className="flex flex-col items-center gap-2 text-center"
-    >
-      <Icon className="h-6 w-6 text-[#f3c85f]" />
-
-      <p className="text-sm font-medium text-[#ffffff]" dir="rtl">
-        {b.ar}
-      </p>
-
-      <p className="text-xs text-[#e4d0d6]" dir="rtl">
-        {b.sub}
-      </p>
-    </div>
-  );
-})}
-          </div>
-        </div>
-      </section>
+    
 
       {/* ─── INSTAGRAM GRID ───────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-4 py-4 sm:px-2 lg:px-10">
         <div className="mb-10 flex items-center justify-center gap-8">
           <span className="h-px w-16 bg-[#c9a96e]" />
           <p
-            className="text-center text-sm tracking-[0.3em] text-[#9a7060]"
+            className="brand-font text-center text-sm tracking-[0.3em] text-[#9a7060]"
             dir="rtl"
           >
-            تابعينا على الإنستقرام
+           FOLLOW US ON INSTAGRAM
           </p>
           <span className="h-px w-16 bg-[#c9a96e]" />
         </div>

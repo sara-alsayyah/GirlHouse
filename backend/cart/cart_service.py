@@ -15,7 +15,7 @@ class CartService:
         if quantity <= 0:
             return {"error": "Invalid quantity"}
 
-        product = get_object_or_404(Product, id=product_id)
+        product = get_object_or_404(Product, id=product_id, is_active=True)
 
         if quantity > product.stock:
             return {"error": "Requested quantity exceeds stock"}
@@ -55,6 +55,9 @@ class CartService:
             id=item_id,
             cart=cart
         )
+
+        if not item.product.is_active:
+            return {"error": "This product is no longer available"}
 
         if quantity > item.product.stock:
             return {"error": "Requested quantity exceeds stock"}

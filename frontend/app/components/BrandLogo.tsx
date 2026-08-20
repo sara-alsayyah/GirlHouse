@@ -1,24 +1,36 @@
 import "./Logo.css";
 
-export function BrandLogo() {
+type BrandLogoProps = {
+  nav?: boolean;
+};
+
+export function BrandLogo({ nav = false }: BrandLogoProps) {
   return (
-    <div className="flex flex-col items-center">
+    <div
+      className={
+        nav
+          ? "flex items-center gap-3"
+          : "flex flex-col items-center"
+      }
+    >
       <img
         src="/GH-logo.png"
         alt="Girl House"
-        className="h-11 w-auto object-contain"
+        className={nav ? "h-9 w-auto object-contain" : "h-9 w-auto object-contain"}
       />
 
-      <h1 className="logo-title">
-        GIRL HOUSE
-      </h1>
+      <div className={nav ? "flex flex-col items-center" : ""}>
+        <h1 className="logo-title #a87b88">
+          GIRL HOUSE
+        </h1>
 
-      <div className="shop-line ">
-        <span></span>
+        <div className="shop-line">
+          <span></span>
 
-        <p className="shop-text">Shop</p>
+          <p className="shop-text">Shop</p>
 
-        <span></span>
+          <span></span>
+        </div>
       </div>
     </div>
   );

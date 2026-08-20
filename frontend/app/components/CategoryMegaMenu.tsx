@@ -31,10 +31,10 @@ export function CategoryMegaMenu({
                 key={group.slug}
                 className={`rounded-[26px] p-5 ${index === 0 ? "bg-[linear-gradient(135deg,#fffdf4,#f1dfb9)]" : "bg-white/72"}`}
               >
-                <Link href={`/products?category=${group.slug}`} className="text-xs uppercase tracking-[0.22em] text-[var(--gold-deep)]">
+                <Link href={`/products?category=${group.slug}`} className=" text-xs uppercase tracking-[0.22em] text-[var(--gold-deep)]">
                   {group.title}
                 </Link>
-                <p className="mt-3 font-[var(--font-display)] text-2xl">{group.spotlight}</p>
+                <p className="brand-font mt-3 font-[var(--font-display)] text-2xl">{group.spotlight}</p>
                 <div className="mt-4 grid gap-2 text-sm text-[var(--muted)]">
                   {group.links.map((link, linkIndex) => (
                     <Link key={`${group.slug}-${linkIndex}`} href={`/products?category=${group.slug}&search=${encodeURIComponent(link)}`}>

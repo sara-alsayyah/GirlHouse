@@ -8,6 +8,7 @@ import { ShippingSettingsCard } from "./components/ShippingSettingsCard";
 import { PaymentSettingsCard } from "./components/PaymentSettingsCard";
 import { NotificationSettingsCard } from "./components/NotificationSettingsCard";
 import { SecuritySettingsCard } from "./components/SecuritySettingsCard";
+import { PromotionBannerSettings } from "./components/PromotionBannerSettings";
 import { adminGetSettings, getApiErrorMessage, getStoredAccessToken } from "@/app/lib/api";
 import type { AdminSettingsData } from "../types/settings";
 
@@ -55,6 +56,7 @@ export default function SettingsPage() {
         {!loading && settings && (
           <>
             <StoreSettingsForm settings={settings.store} />
+            <PromotionBannerSettings />
 
             <div className="grid gap-6 lg:grid-cols-2">
               <ShippingSettingsCard settings={settings.shipping} />

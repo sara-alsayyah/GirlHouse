@@ -8,8 +8,8 @@ from core.permissions import IsAdmin
 from orders.models import Order, OrderItem
 from products.models import Product, ProductImage
 from users.models import User
-from .models import HeroSlide
-from .serializers import HeroSlideSerializer
+from .models import HeroSlide, PromotionBanner
+from .serializers import HeroSlideSerializer, PromotionBannerSerializer
 
 
 class HeroSlidesAPIView(APIView):
@@ -18,6 +18,31 @@ class HeroSlidesAPIView(APIView):
     def get(self, request):
         slides = HeroSlide.objects.filter(is_active=True).order_by("order")
         serializer = HeroSlideSerializer(slides, many=True)
+        return Response(serializer.data)
+
+
+class PromotionBannerAPIView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        promotion, _ = PromotionBanner.objects.get_or_create(pk=1)
+        return Response(PromotionBannerSerializer(promotion).data)
+
+
+class AdminPromotionBannerAPIView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get_object(self):
+        promotion, _ = PromotionBanner.objects.get_or_create(pk=1)
+        return promotion
+
+    def get(self, request):
+        return Response(PromotionBannerSerializer(self.get_object()).data)
+
+    def patch(self, request):
+        serializer = PromotionBannerSerializer(self.get_object(), data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
 
 class AdminDashboardAPIView(APIView):

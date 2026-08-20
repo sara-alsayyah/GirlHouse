@@ -103,20 +103,49 @@ export default function RegisterPage() {
     return newErrors;
   }
 
-  function safeErrorMessage(error: unknown) {
-    if (!error) return "Something went wrong";
-
-    if (typeof error === "string") return error;
-
-    const maybeError = error as ErrorWithOptionalMessage;
-
-    if (maybeError.detail) return maybeError.detail;
-
-    if (maybeError.message) return maybeError.message;
-
-    return "Something went wrong";
+function safeErrorMessage(error: unknown) {
+  if (!error) {
+    return "Something went wrong. Please try again.";
   }
 
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (typeof error === "object") {
+    const data = error as Record<string, unknown>;
+
+    if (
+      Array.isArray(data.email) &&
+      data.email.some((msg) =>
+        String(msg).includes("already exists")
+      )
+    ) {
+      return "This email is already registered. Please login or use another email.";
+    }
+
+    if (Array.isArray(data.password)) {
+      return data.password.join(" ");
+    }
+
+    if (Array.isArray(data.phone)) {
+      return data.phone.join(" ");
+    }
+
+  
+    return Object.entries(data)
+      .map(([field, value]) => {
+        if (Array.isArray(value)) {
+          return `${field}: ${value.join(", ")}`;
+        }
+
+        return `${field}: ${String(value)}`;
+      })
+      .join("\n");
+  }
+
+  return "Something went wrong. Please try again.";
+}
   async function handleRegister() {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {

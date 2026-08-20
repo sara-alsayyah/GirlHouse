@@ -30,7 +30,6 @@ export function QuickViewModal() {
             <div className="grid gap-6 md:grid-cols-[0.9fr,1.1fr]">
               <div className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#fff6dd,#ddb75b)]">
                 {imageSrc ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={imageSrc}
                     alt={quickViewProduct.name}

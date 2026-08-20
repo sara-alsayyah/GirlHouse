@@ -4,6 +4,16 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class AdminNotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        user = self.scope.get("user")
+        if not (
+            user
+            and user.is_authenticated
+            and user.is_active
+            and user.is_staff
+        ):
+            await self.close(code=4403)
+            return
+
         self.group_name = "admin_notifications"
 
         await self.channel_layer.group_add(

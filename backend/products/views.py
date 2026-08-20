@@ -52,7 +52,7 @@ class ProductListAPIView(generics.ListAPIView):
     ]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(is_active=True)
 
         min_price = self.request.query_params.get("min_price")
         max_price = self.request.query_params.get("max_price")
@@ -80,6 +80,7 @@ class ProductListAPIView(generics.ListAPIView):
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = (
         Product.objects
+        .filter(is_active=True)
         .select_related("category")
         .prefetch_related("reviews")
     )

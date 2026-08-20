@@ -1,6 +1,8 @@
 @import "tailwindcss";
+/* Explicitly scan the Next.js app directory for Tailwind utility classes. */
+@source "./";
 :root {
-  --background: #fff8f7;
+  --background: #fffDfB;
   --surface: rgba(255, 255, 255, 0.88);
   --surface-strong: rgba(255, 255, 255, 0.95);
   --foreground: #4b343a;
@@ -13,8 +15,8 @@
   --shadow: 0 20px 60px rgba(183, 136, 149, 0.12);
   --radius-xl: 28px;
   --radius-lg: 18px;
-  --font-display: "Playfair Display", serif;
-  --font-body: "Poppins", sans-serif;
+  --font-display: var(--font-didot), "Times New Roman", serif;
+  --font-body: "Helvetica Neue", Arial, sans-serif;
 }
 
 html[data-theme="dark"] {
@@ -48,16 +50,14 @@ body {
 }
 
 .nav-icon {
-  @apply flex h-10 w-10 items-center justify-center rounded-lg hover:bg-[#faf8f6] transition;
+  @apply flex h-10 w-10 items-center justify-center rounded-full text-[#79515b] transition hover:bg-[#f6edef];
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   color: var(--foreground);
-  background:
-    radial-gradient(circle at top, rgba(243, 200, 95, 0.1), transparent 30%),
-    linear-gradient(180deg, #fffdf8 0%, #f5ede3 48%, #efe2cf 100%);
+  background:#FFFDFB;
   font-family: var(--font-body);
 }
 
@@ -71,20 +71,8 @@ html[data-theme="dark"] body {
     ),
     linear-gradient(180deg, #100c08 0%, #16100b 48%, #1d1510 100%);
 }
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.18;
-  z-index: -1;
-}
 .brand-font {
-  font-family: "GFS Didot", "Bodoni Moda", serif;
+  font-family: var(--font-display);
 }
 .arabic-font {
   font-family: var(--font-arabic);
@@ -95,30 +83,16 @@ body::after {
   color: #d4b080;
  
 }
-
-.shine-gold::after {
-  content: attr(data-text);
-  position: absolute;
-  inset:0;
-  width: 100%;
-  color: rgba(255, 255, 255, 0.6);
-
-  clip-path: inset(0 100% 0 0);
-
-  animation: shineText 2.8s infinite;
-  pointer-events: none;
+.text-font{
+  font-family: var(--font-body);
 }
 
-@keyframes shineText {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  50% {
-    clip-path: inset(0 0% 0 0);
-  }
-  100% {
-    clip-path: inset(0 100% 0 0);
-  }
+.shine-gold {
+  display: inline-block;
+  background: linear-gradient(120deg, var(--gold-deep) 0%, var(--gold) 40%, var(--gold-soft) 60%, var(--gold-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 a {
@@ -145,6 +119,15 @@ textarea {
 ::-webkit-scrollbar-thumb {
   background: rgba(143, 108, 29, 0.32);
   border-radius: 999px;
+}
+
+.category-scroll {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .page-shell {
@@ -176,11 +159,7 @@ textarea {
 
 .luxury-card {
   border-radius: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.9),
-    rgba(250, 242, 240, 0.82)
-  );
+  background: #ffffff;
   border: 1px solid rgba(166, 122, 122, 0.14);
   box-shadow: 0 18px 45px rgba(100, 70, 75, 0.08);
 }

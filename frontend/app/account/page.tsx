@@ -17,7 +17,6 @@ export default function AccountPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const [user, setUser] = useState<UserProfile | null>(null);
 
 useEffect(() => {
   setIsMounted(true);
@@ -33,7 +32,6 @@ useEffect(() => {
     getAddresses(token),
   ])
     .then(([userData, userOrders, userAddresses]) => {
-      setUser(userData);
       setProfile(userData);
       setOrders(asArray(userOrders));
       setAddresses(userAddresses);
@@ -56,25 +54,26 @@ useEffect(() => {
   ];
 
 return (
-  <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-10">
-    <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
-      <p className="text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">
+  <PageReveal className="mx-auto max-w-[1440px] px-4 pb-20 pt-8 sm:px-6 lg:px-10 lg:pt-12">
+    <section className="border border-[#eadfe0] bg-[#f8f2ef] px-6 py-8 sm:px-10 sm:py-11">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#956773]">
         Account dashboard
       </p>
 
-      <h1 className="section-heading mt-4 text-5xl">
-        Profile, addresses, and orders in one calm place.
+      <h1 className="section-heading mt-3 max-w-2xl text-3xl text-[#49343a] sm:text-5xl">
+        Your Girl House account.
       </h1>
+      <p className="mt-3 max-w-xl text-sm leading-6 text-[#765f65]">Your details, saved addresses, and orders—neatly kept in one place.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
+          <div className="border border-[#eadfe0] bg-white/70 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Orders</p>
             <p className="mt-2 font-[var(--font-display)] text-3xl">{orders.length}</p>
           </div>
-          <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
+          <div className="border border-[#eadfe0] bg-white/70 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Addresses</p>
             <p className="mt-2 font-[var(--font-display)] text-3xl">{addresses.length}</p>
           </div>
-          <div className="rounded-[24px] border border-[rgba(166,122,122,0.14)] bg-white/66 p-4">
+          <div className="border border-[#eadfe0] bg-white/70 p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Status</p>
             <p className="mt-2 font-[var(--font-display)] text-3xl">
   {isMounted && (token ? "Active" : "Guest")}
@@ -91,16 +90,16 @@ return (
       </div>
     ) : (
         <section className="mt-8 space-y-6">
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-0 overflow-x-auto border-b border-[#eadfe0]">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`rounded-full px-5 py-3 text-sm uppercase tracking-[0.16em] ${
+                className={`whitespace-nowrap border-b-2 px-4 py-3 text-xs uppercase tracking-[0.14em] transition sm:px-5 ${
                   activeTab === tab.id
-                    ? "gold-button"
-                    : "border border-[rgba(166,122,122,0.14)] bg-white/70"
+                    ? "border-[#956773] text-[#79515b]"
+                    : "border-transparent text-[#896f76] hover:text-[#79515b]"
                 }`}
               >
                 {tab.label}

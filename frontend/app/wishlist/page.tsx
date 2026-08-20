@@ -9,7 +9,7 @@ export default function WishlistPage() {
   const { wishlistItems, addProductToCart } = useStore();
 
   return (
-    <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6 lg:px-10">
+    <PageReveal className="page-shell mx-auto max-w-7xl px-4 pb-10 pt-10 sm:px-6 lg:px-10">
       <section className="luxury-card rounded-[38px] px-6 py-8 sm:px-10">
         <p className="text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">Wishlist</p>
         <h1 className="section-heading mt-4 text-5xl">Your saved luxury picks.</h1>

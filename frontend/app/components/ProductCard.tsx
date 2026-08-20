@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import type { Product } from "@/app/lib/types";
 import { getProductImageUrl, money } from "@/app/lib/api";
 import { useStore } from "@/app/providers/StoreProvider";
-import { EyeIcon, HeartIcon } from "@/app/components/icons";
+import { HeartIcon } from "@/app/components/icons";
 
 export function ProductCard({
   product,
@@ -19,7 +19,6 @@ const {
   addProductToCart,
   toggleWishlist,
   isWishlisted,
-  setQuickViewProduct,
 } = useStore();
 
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -42,16 +41,6 @@ const {
     }
   };
 
-  const handleQuickView = () => {
-    if (!product) return;
-
-    try {
-      setQuickViewProduct(product);
-    } catch (err) {
-      console.error("Quick view failed:", err);
-    }
-  };
-
   const handleWishlist = async () => {
     if (!product) return;
 
@@ -66,15 +55,15 @@ const {
 
   return (
     <motion.article
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className="group flex flex-col overflow-hidden bg-transparent"
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="group flex min-w-0 flex-col bg-transparent"
     >
       {/* IMAGE */}
-      <div className={`relative  overflow-hidden ${featured ? "md:w-[52%]" : ""}`}>
+      <div className={`relative overflow-hidden bg-[#f5f0ed] ${featured ? "md:w-[52%]" : "aspect-[3/4]"}`}>
         <Link
   href={`/products/${product.slug}`}
-  className={`relative block overflow-hidden ${
+    className={`relative block h-full overflow-hidden ${
     featured ? "md:w-[52%]" : ""
   }`}
 >
@@ -83,28 +72,28 @@ const {
             ref={imageRef}
             src={imageSrc}
             alt={product.name}
-            className={` inset-0 h-full w-full object-contain transition duration-500 group-hover:scale-[1.04] ${
-              featured ? "h-full min-h-[360px]" : "h-[280px] sm:h-[320px]"
+            className={`inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.035] ${
+              featured ? "min-h-[360px]" : ""
             }`}
           />
         ) : (
           <div
             className={`flex items-end bg-[radial-gradient(circle_at_top,#fff8de,#d5b14c_45%,#b88722_100%)] ${
-              featured ? "h-full min-h-[360px]" : "h-[280px] sm:h-[320px]"
+              featured ? "h-full min-h-[360px]" : "h-full"
             }`}
           />
         )}
 
         <div className="absolute right-4 top-4 flex flex-col gap-2">
 {/* Wishlist */}
-<div className="absolute right-4 top-4">
+<div className="absolute right-3 top-3 sm:right-4 sm:top-4">
   <button
     type="button"
     onClick={(e) => {
       e.preventDefault();
       handleWishlist();
     }}
-    className=" p-2transition hover:scale-110"
+    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/85 shadow-sm backdrop-blur transition hover:scale-110"
   >
     <HeartIcon
       className={`h-6 w-6 ${
@@ -121,20 +110,20 @@ const {
       </div>
 
       {/* CONTENT */}
-      <div className="brand-font mt-4 flex flex-col items-center text-center gap-2">
+      <div className="brand-font mt-3 flex flex-col items-center gap-2 text-center sm:mt-4">
 
-        <div className="space-y-4">
+        <div className="w-full space-y-2">
 
           <div className="flex items-start justify-between gap-4">
             <div>
             <Link
   href={`/products/${product.slug}`}
-  className="text-base font-medium"
+  className="line-clamp-2 text-sm font-medium tracking-wide text-[#473238] sm:text-base"
 >
   {product.name}
 </Link>
            
-              <p className="mt-2 text-lg font-semibold">
+              <p className="text-sm font-semibold text-[#8e5e6b] sm:text-base">
     {money(product.price)}
   </p>
          
@@ -151,7 +140,7 @@ const {
             whileTap={{ scale: 0.98 }}
             onClick={handleQuickAdd}
             disabled={loading}
-            className="gold-button px-5 py-3 text-sm uppercase tracking-[0.16em]"
+            className="mt-1 w-full border border-[#a77884] bg-transparent px-3 py-2.5 text-[10px] uppercase tracking-[0.16em] text-[#704b55] transition hover:bg-[#956773] hover:text-white sm:text-xs"
           >
             {loading ? "Adding..." : "Quick add"}
           </motion.button>

@@ -1,200 +1,100 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useStore } from "@/app/providers/StoreProvider";
 import { BrandLogo } from "@/app/components/BrandLogo";
-import { CategoryMegaMenu } from "@/app/components/CategoryMegaMenu";
-import {
-  BagIcon,
-  CloseIcon,
-  HeartIcon,
-  MenuIcon,
-  SearchIcon,
-  UserIcon,
-} from "@/app/components/icons";
+import { BagIcon, CloseIcon, HeartIcon, MenuIcon, SearchIcon, UserIcon } from "@/app/components/icons";
 import { HeaderSearch } from "@/app/components/HeaderSearch";
+import { CategoriesBar } from "./CategoriesBar";
 
-const rightNavigation = [
-  { href: "/about", label: "من نحن" },
-  { href: "/products?category=women", label: "وصل حديثاً" },
-  { href: "/products", label: "المجموعات" },
-  { href: "/contact", label: "اتصل بنا" },
-  { href: "/", label: "الرئيسية" },
+const navigation = [
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Collections" },
+  { href: "/products?sort=new", label: "New arrivals" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function SiteHeader() {
-  const { openWishlist, wishlistCount, user } = useStore();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { wishlistCount, isAdmin, mounted } = useStore();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const router = useRouter();
-  const [hidden, setHidden] = useState(false);
-  function handleSearch(e: React.FormEvent) {
-  e.preventDefault();
-
-  const value = search.trim();
-
-  if (!value) return;
-
-  router.push(`/products?search=${encodeURIComponent(value)}`);
-
-  setSearch("");
-  setSearchOpen(false);
-}
-
   const pathname = usePathname();
+  const closeMenu = () => setMenuOpen(false);
 
-  function closeMenus() {
-    setIsMobileMenuOpen(false);
-  }
-  
   return (
-   <>
-<div className="brand-font top-0 left-0 right-0 z-[60] bg-[#956773] py-2 text-center text-xs tracking-[0.25em] uppercase text-white">
-  ✨ Delivery All Over Lebanon • New Collection Available
-</div>
+    <header className="relative z-[60]">
+      <div className="bg-[#79515b] px-3 py-2 text-center text-[9px] font-semibold uppercase tracking-[0.22em] text-white sm:text-[10px]">
+        Delivery all over Lebanon <span className="mx-2 text-[#efd7b4]">•</span> New collection available
+      </div>
+      <nav className="border-b border-[#eadfe0] bg-[#fffdfb]/95 backdrop-blur-lg">
+        <div className="mx-auto grid h-[72px] max-w-[1440px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 sm:px-6 lg:h-[92px] lg:grid-cols-[190px_minmax(0,1fr)_190px] lg:gap-5 lg:px-10">
+          <Link href="/" aria-label="Girl House home" onClick={closeMenu} className="min-w-0 shrink-0 justify-self-start">
+            <BrandLogo />
+          </Link>
 
-  <header className="relative z-30">
-  <nav className="absolute top-0 left-0 right-0 z-[50]">
-        <div
-          className={`flex items-center justify-between transition-all duration-300
-          }`}
-        >
-          <div className="mx-auto max-w-7xl w-full px-6 lg:px-10">
-            <div className="relative h-[92px] w-full flex items-center justify-between pt-2">
+          <div className="hidden min-w-0 lg:block">
+            <Suspense fallback={null}>
+              <CategoriesBar />
+            </Suspense>
+          </div>
 
-  {/* LEFT */}
-  <div className="flex items-center gap-3 flex-1">
-
-    {/* Desktop search */}
-    <div className="hidden lg:flex items-center gap-2 w-[240px]">
-      <SearchIcon className="h-5 w-5 text-[#b78895]" />
-
-      <input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search products..."
-        className="w-full bg-transparent border-b border-[#d8b6be] outline-none text-sm placeholder:text-[#b78895]/60"
-      />
-    </div>
-
-    {/* Mobile search icon */}
-    <button
-      onClick={() => setSearchOpen(true)}
-      className="lg:hidden flex items-center justify-center"
-    >
-      <SearchIcon className="h-5 w-5 text-[#b78895]" />
-    </button>
-
-  </div>
-
-  {/* CENTER LOGO */}
-  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 scale-[0.9] sm:scale-100">
-    <Link href="/" onClick={closeMenus}>
-      <BrandLogo />
-    </Link>
-  </div>
-
-  {/* RIGHT */}
-  <div className="flex items-center justify-end flex-1">
-
-    {/* Desktop */}
-    <div className="hidden lg:flex items-center gap-5">
-
-      <Link
-        href={user?.is_admin ? "/admin" : "/account"}
-        className="flex items-center gap-2 text-sm text-[#7d6269]"
-      >
-        <UserIcon className="h-5 w-5 text-[#b78895]" />
-        <span className="hidden underline xl:inline">Account</span>
-      </Link>
-       <Link
-        href={"/wishlist"}
-        className="flex items-center gap-2 text-sm text-[#7d6269]"
-      >
-        <HeartIcon className="h-5 w-5 text-[#b78895]" />
-        <span className="hidden underline xl:inline">Wishlist ({wishlistCount})</span>
-     
-      </Link>
-
-      <Link
-        href="/cart"
-        className="flex items-center gap-2 text-sm text-[#7d6269]"
-      >
-        <BagIcon className="h-5 w-5 text-[#b78895]" />
-        <span className="hidden underline xl:inline">Bag (0)</span>
-      </Link>
-
-    </div>
-
-    {/* Mobile menu button */}
-    <div className="lg:hidden">
-      <button
-        type="button"
-        onClick={() => setIsMobileMenuOpen((c) => !c)}
-        className="flex h-10 w-10 items-center justify-center"
-      >
-        {isMobileMenuOpen ? (
-          <CloseIcon className="h-5 w-5 text-[#b78895]" />
-        ) : (
-          <MenuIcon className="h-5 w-5 text-[#b78895]" />
-        )}
-      </button>
-    </div>
-
-  </div>
-            </div>
+          <div className="flex items-center gap-1 justify-self-end sm:gap-2">
+            <button type="button" onClick={() => setSearchOpen(true)} className="nav-icon" aria-label="Search products" aria-expanded={searchOpen} aria-controls="site-search-dialog">
+              <SearchIcon className="h-5 w-5" />
+            </button>
+            <Link href={mounted && isAdmin ? "/admin" : "/account"} className="nav-icon hidden sm:flex" aria-label="Account">
+              <UserIcon className="h-5 w-5" />
+            </Link>
+            <Link href="/wishlist" className="nav-icon relative hidden sm:flex" aria-label="Wishlist">
+              <HeartIcon className="h-5 w-5" />
+              {wishlistCount > 0 && <span className="absolute right-0 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#956773] px-1 text-[9px] font-bold text-white">{wishlistCount}</span>}
+            </Link>
+            <Link href="/cart" className="nav-icon" aria-label="Shopping bag"><BagIcon className="h-5 w-5" /></Link>
+            <button type="button" onClick={() => setMenuOpen(true)} className="nav-icon lg:hidden" aria-label="Open navigation"><MenuIcon className="h-5 w-5" /></button>
           </div>
         </div>
       </nav>
-     {searchOpen && (
-  <div className="fixed top-[90px] left-0 right-0 z-50 flex justify-center px-6">
-    <HeaderSearch />
-  </div>
-)}
 
-      {isMobileMenuOpen && (
-        <div className="mt-20 bg-white/95 border-t border-[rgba(166,122,122,0.08)] lg:hidden">
-          <div className="space-y-2 px-4 py-4">
-            {rightNavigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMenus}
-                className="block px-4 py-3 text-sm text-[#8a7a7d] hover:text-[#b78895] hover:bg-[#faf8f6] rounded-lg transition"
-              >
-                <div className="text-sm font-medium">{item.label}</div>
-              </Link>
-            ))}
+      <div className="border-b border-[#eadfe0] bg-[#fffdfb]/95 px-3 lg:hidden">
+        <Suspense fallback={null}>
+          <CategoriesBar />
+        </Suspense>
+      </div>
 
-            <div className="flex gap-2 pt-2">
-              <Link
-                href="/login"
-                onClick={closeMenus}
-                className="flex-1 rounded-lg border border-[#b78895] px-4 py-2 text-center text-sm text-[#b78895] hover:bg-[#faf8f6] transition"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                onClick={closeMenus}
-                className="flex-1 rounded-lg px-4 py-2 text-center text-sm text-white transition"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #d4b599 0%, #b78895 48%, #a67a7a 100%)",
-                }}
-              >
-                Join
-              </Link>
-            </div>
+      {searchOpen && (
+        <div id="site-search-dialog" className="fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label="Search products">
+          <button type="button" className="absolute inset-0 cursor-default bg-[#34242a]/35 backdrop-blur-[2px]" aria-label="Close search" onClick={() => setSearchOpen(false)} />
+          <div className="relative mx-auto mt-16 w-[min(92vw,680px)] sm:mt-24">
+            <button type="button" onClick={() => setSearchOpen(false)} className="mb-3 ml-auto flex min-h-10 items-center rounded-full bg-white px-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#79515b] shadow-lg">Close</button>
+            <Suspense fallback={null}><HeaderSearch onClose={() => setSearchOpen(false)} /></Suspense>
           </div>
         </div>
       )}
 
-      <CategoryMegaMenu open={false} onEnter={() => {}} onLeave={() => {}} />
+      {menuOpen && (
+        <div className="fixed inset-0 z-[80] lg:hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
+          <button type="button" aria-label="Close navigation" onClick={closeMenu} className="absolute inset-0 bg-[#34242a]/35 backdrop-blur-[2px]" />
+          <aside className="absolute right-0 top-0 flex h-full w-[min(88vw,360px)] flex-col bg-[#fffdfb] px-6 py-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#eadfe0] pb-5">
+              <BrandLogo />
+              <button type="button" onClick={closeMenu} className="nav-icon" aria-label="Close navigation"><CloseIcon className="h-5 w-5" /></button>
+            </div>
+            <div className="mt-7 flex flex-col">
+              {navigation.map((item) => (
+                <Link key={item.href} href={item.href} onClick={closeMenu} className={`border-b border-[#eee3e4] py-4 text-sm uppercase tracking-[0.16em] ${pathname === item.href ? "text-[#956773]" : "text-[#4b343a]"}`}>{item.label}</Link>
+              ))}
+              <Link href="/account" onClick={closeMenu} className="border-b border-[#eee3e4] py-4 text-sm uppercase tracking-[0.16em] text-[#4b343a]">My account</Link>
+              <Link href="/wishlist" onClick={closeMenu} className="border-b border-[#eee3e4] py-4 text-sm uppercase tracking-[0.16em] text-[#4b343a]">Wishlist</Link>
+            </div>
+            <div className="mt-auto grid grid-cols-2 gap-3 pt-8">
+              <Link href="/login" onClick={closeMenu} className="border border-[#b98e98] py-3 text-center text-xs uppercase tracking-wider text-[#79515b]">Login</Link>
+              <Link href="/register" onClick={closeMenu} className="bg-[#956773] py-3 text-center text-xs uppercase tracking-wider text-white">Create account</Link>
+            </div>
+          </aside>
+        </div>
+      )}
     </header>
-    </>
   );
 }
