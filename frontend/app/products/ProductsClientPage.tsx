@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts, getPublicCategories, asArray } from "@/app/lib/api";
+import { getProducts, getPublicCategories, getCollectionHero, asArray, resolveMediaUrl } from "@/app/lib/api";
 import { PageReveal } from "@/app/components/PageReveal";
 import { ProductCard } from "@/app/components/ProductCard";
 import type { Product, Category } from "@/app/lib/types";
@@ -36,12 +36,19 @@ export function ProductsClientPage({
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroVideo, setHeroVideo] = useState<string | null>(null);
 
 
 useEffect(() => {
   getPublicCategories()
     .then((data) => setCategories(asArray(data)))
     .catch(() => setCategories([]));
+}, []);
+
+useEffect(() => {
+  getCollectionHero()
+    .then((hero) => setHeroVideo(hero.is_active ? resolveMediaUrl(hero.video) : null))
+    .catch(() => setHeroVideo(null));
 }, []);
 
   /* ======================
@@ -91,15 +98,13 @@ useEffect(() => {
   return (
     <PageReveal className="mx-auto max-w-[1440px] bg-[#ffffff] px-4 pb-20 pt-3 sm:px-6 lg:px-10">
       <section className="relative min-h-[320px] overflow-hidden sm:min-h-[420px] lg:mt-24 lg:min-h-[520px]">
-  <video
-    autoPlay
-    muted
-    loop
-    playsInline
-    className="absolute inset-0 h-full w-full object-cover"
-  >
-    <source src="http://127.0.0.1:8001/media/hero/hero.mp4" type="video/mp4" />
-  </video>
+  {heroVideo ? (
+    <video autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 h-full w-full object-cover">
+      <source src={heroVideo} type={heroVideo.endsWith(".webm") ? "video/webm" : "video/mp4"} />
+    </video>
+  ) : (
+    <div className="absolute inset-0 bg-[linear-gradient(135deg,#3e2930,#79515b_55%,#c99999)]" />
+  )}
 
   {/* dark overlay */}
   <div className="absolute inset-0 bg-black/30" />

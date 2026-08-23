@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import HeroSlide, PromotionBanner
+from .models import CollectionHero, HeroSlide, PromotionBanner
 
 class HeroSlideSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +11,14 @@ class PromotionBannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PromotionBanner
         fields = ["is_enabled", "eyebrow", "headline", "button_label", "button_url"]
+
+
+class CollectionHeroSerializer(serializers.ModelSerializer):
+    video = serializers.FileField(read_only=True)
+
+    class Meta:
+        model = CollectionHero
+        fields = ["video", "is_active", "updated_at"]
 
 class RecentOrderSerializer(serializers.Serializer):
     id = serializers.IntegerField()

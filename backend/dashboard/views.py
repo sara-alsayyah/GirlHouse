@@ -8,8 +8,8 @@ from core.permissions import IsAdmin
 from orders.models import Order, OrderItem
 from products.models import Product, ProductImage
 from users.models import User
-from .models import HeroSlide, PromotionBanner
-from .serializers import HeroSlideSerializer, PromotionBannerSerializer
+from .models import CollectionHero, HeroSlide, PromotionBanner
+from .serializers import CollectionHeroSerializer, HeroSlideSerializer, PromotionBannerSerializer
 
 
 class HeroSlidesAPIView(APIView):
@@ -27,6 +27,18 @@ class PromotionBannerAPIView(APIView):
     def get(self, request):
         promotion, _ = PromotionBanner.objects.get_or_create(pk=1)
         return Response(PromotionBannerSerializer(promotion).data)
+
+
+class CollectionHeroAPIView(APIView):
+    """Public endpoint for the collection page's optional hero video."""
+
+    permission_classes = []
+
+    def get(self, request):
+        hero = CollectionHero.objects.filter(is_active=True).first()
+        if not hero or not hero.video:
+            return Response({"video": None, "is_active": False})
+        return Response(CollectionHeroSerializer(hero, context={"request": request}).data)
 
 
 class AdminPromotionBannerAPIView(APIView):

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 class HeroSlide(models.Model):
     title = models.CharField(max_length=255, blank=True)
@@ -26,3 +27,24 @@ class PromotionBanner(models.Model):
 
     def __str__(self):
         return self.headline
+
+
+class CollectionHero(models.Model):
+    """Single, admin-managed video shown at the top of the collection page."""
+
+    video = models.FileField(
+        upload_to="hero/videos/",
+        validators=[FileExtensionValidator(allowed_extensions=["mp4", "webm"])],
+        blank=True,
+        null=True,
+        help_text="Upload an MP4 or WebM video. Use a compressed web video for fast loading.",
+    )
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Collection hero video"
+        verbose_name_plural = "Collection hero video"
+
+    def __str__(self):
+        return "Collection hero video"

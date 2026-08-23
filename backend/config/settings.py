@@ -23,7 +23,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         "ALLOWED_HOSTS",
-        "127.0.0.1,localhost,192.168.10.209"
+        "127.0.0.1,localhost"
     ).split(",")
     if host.strip()
 ]
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'storages',
     'users',
     'products',
     'cart',
@@ -63,6 +64,8 @@ INSTALLED_APPS = [
     'notifications',
     'channels',
     'audit',
+    'config',
+    
     
 ]
 
@@ -97,6 +100,15 @@ CACHES = {
         }
     )
 }
+# Backblaze B2 / S3 Storage
+B2_ACCESS_KEY_ID = os.environ.get("B2_ACCESS_KEY_ID")
+B2_SECRET_ACCESS_KEY = os.environ.get("B2_SECRET_ACCESS_KEY")
+B2_BUCKET_NAME = os.environ.get("B2_BUCKET_NAME")
+B2_ENDPOINT_URL = os.environ.get("B2_ENDPOINT_URL")
+
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_REGION_NAME = "us-east-005"
+
 
 ASGI_APPLICATION = 'config.asgi.application'
 
@@ -148,6 +160,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # BrowsableAPIView needs DRF static assets. In production those assets are
+    # not part of the API response and can trigger manifest errors when an API
+    # URL is opened directly in a browser, so expose JSON only.
+    'DEFAULT_RENDERER_CLASSES': (
+        ['rest_framework.renderers.JSONRenderer']
+        if not DEBUG
+        else [
+            'rest_framework.renderers.JSONRenderer',
+            'rest_framework.renderers.BrowsableAPIRenderer',
+        ]
+    ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
@@ -178,10 +201,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "config.storage.B2Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 AUTH_USER_MODEL = 'users.User'
 DEFAULT_FROM_EMAIL = 'noreply@girlhouse.shop'

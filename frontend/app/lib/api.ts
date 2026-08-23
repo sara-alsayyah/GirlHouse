@@ -323,6 +323,10 @@ export const getHeroSlides = async () => {
   const res = await fetch(`${API_BASE}/dashboard/hero-slides`);
   return res.json();
 };
+export type CollectionHero = { video: string | null; is_active: boolean };
+export async function getCollectionHero() {
+  return apiFetch<CollectionHero>("/dashboard/collection-hero/");
+}
 export type PromotionBanner = { is_enabled: boolean; eyebrow: string; headline: string; button_label: string; button_url: string };
 export async function getPromotionBanner() {
   return apiFetch<PromotionBanner>("/dashboard/promotion/");
