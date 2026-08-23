@@ -9,9 +9,6 @@ load_dotenv(BASE_DIR / ".env", override=True)
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-print("DEBUG VALUE:", os.environ.get("DEBUG"))
-print("SECRET_KEY EXISTS:", bool(SECRET_KEY))
-print("SECRET_KEY LENGTH:", len(SECRET_KEY) if SECRET_KEY else 0)
 
 DEBUG = os.environ.get("DEBUG", "False").strip().lower() == "true"
 
