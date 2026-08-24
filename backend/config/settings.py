@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
 
 
 
-FRONTEND_BASE_URL = os.environ.get('FRONTEND_BASE_URL', 'http://localhost:3000')
+FRONTEND_BASE_URL = os.environ.get('FRONTEND_BASE_URL', 'https://girl-house-r6to.vercel.app')
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
