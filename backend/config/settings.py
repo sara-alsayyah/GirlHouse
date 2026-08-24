@@ -1,7 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
 import os
-from django.contrib.messages import api
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +25,6 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         "ALLOWED_HOSTS",
-        "localhost,127.0.0.1",
         "girlhouse-api.up.railway.app"
     ).split(",")
     if host.strip()
