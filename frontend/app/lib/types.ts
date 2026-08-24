@@ -45,13 +45,6 @@ export type Address = {
   street: string;
 };
 
-type User = {
-  id: number;
-  email: string;
-  is_admin?: boolean;
-  is_staff?: boolean;
-  is_superuser?: boolean;
-} | null;
 
 export type UserProfile = {
   id: number;

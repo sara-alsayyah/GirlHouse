@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
         <p className="text-xs uppercase tracking-[0.34em] text-[var(--gold-deep)]">Password recovery</p>
         <h1 className="section-heading mt-4 text-5xl">Reset your access.</h1>
         <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--muted)]">
-          Enter the email linked to your account and we will send a secure reset link.
+          Enter the email linked to your account and we will send a secure reset link..
         </p>
 
         <div className="mt-8 space-y-4">
