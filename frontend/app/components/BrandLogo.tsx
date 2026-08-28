@@ -14,7 +14,7 @@ export function BrandLogo({ nav = false }: BrandLogoProps) {
       }
     >
       <img
-        src="/GH-logo.png"
+        src="public/GH-logo.png"
         alt="Girl House"
         className={nav ? "h-9 w-auto object-contain" : "h-9 w-auto object-contain"}
       />

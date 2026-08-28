@@ -25,7 +25,7 @@ export function AdminTopbar({ user }: Props) {
             
             {/* LOGO */}
             <img
-              src="/GH-logoF.png"
+              src="public/GH-logoF.png"
               alt="Girl House"
               className="h-11 w-11 rounded-full object-cover border border-[#e6d2d7]"
             />

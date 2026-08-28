@@ -67,7 +67,7 @@ export function AdminSidebar() {
         <div className="border-b border-white/10 ">
           <div className="flex justify-center rounded-xl">
             <img
-              src="/GH-Logo.png"
+              src="public/GH-Logo.png"
               alt="Girl House Logo"
               className="w-[150px]"
             />
