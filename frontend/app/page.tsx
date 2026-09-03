@@ -203,7 +203,10 @@ backgroundImage: currentSlide?.image
   : "01 ── 03"}
           </p>
         </div>
+         {/* ─── PROMO CAROUSEL ───────────────────────────────────── */}
+      <PromoCarousel />
 </section>
+
 
       {promotion?.is_enabled && (
         <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-10">
@@ -218,9 +221,8 @@ backgroundImage: currentSlide?.image
         </section>
       )}
 
-      
-      {/* ─── PROMO CAROUSEL ───────────────────────────────────── */}
-      <PromoCarousel />
+
+     
 
 
         {/* ─── TRUST BADGES ─────────────────────────────────────── */}
