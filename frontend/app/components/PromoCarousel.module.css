@@ -1,0 +1,75 @@
+
+.wrap :global(.carousel) {
+  position: relative;
+}
+
+.wrap :global(.carousel-inner) {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .wrap :global(.carousel-inner) {
+    height: 220px;
+  }
+}
+
+.wrap :global(.carousel-item) {
+  position: absolute;
+  inset: 0;
+  display: flex !important;
+  opacity: 0;
+  transition: opacity 600ms ease-in-out;
+  pointer-events: none;
+}
+
+.wrap :global(.carousel-item.active) {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+}
+
+.slide {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--paper-strong);
+  padding: 2.5rem 1.5rem;
+}
+
+.wrap :global(.carousel-indicators) {
+  position: absolute;
+  bottom: 14px;
+  margin: 0;
+  gap: 8px;
+}
+
+.wrap :global(.carousel-indicators [data-bs-target]),
+.wrap :global(.carousel-indicators button) {
+  width: 22px;
+  height: 2px;
+  border-radius: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+  border: none;
+  opacity: 1;
+  transition: background-color 200ms ease;
+}
+
+.wrap :global(.carousel-indicators .active) {
+  background-color: #fff;
+}
+
+.wrap :global(.carousel-control-prev),
+.wrap :global(.carousel-control-next) {
+  width: 44px;
+  opacity: 0.85;
+}
+
+.wrap :global(.carousel-control-prev-icon),
+.wrap :global(.carousel-control-next-icon) {
+  width: 1.1rem;
+  height: 1.1rem;
+}

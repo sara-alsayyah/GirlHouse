@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { asArray, getHeroSlides, getProducts, getProductImageUrl, getPromotionBanner, money, resolveMediaUrl, type PromotionBanner } from "@/app/lib/api";
 import type { Product } from "@/app/lib/types";
 import { PageReveal } from "@/app/components/PageReveal";
+import { PromoCarousel } from "@/app/components/PromoCarousel";
 import {
   TruckIcon,
   ShieldCheckIcon,
@@ -216,6 +217,12 @@ backgroundImage: currentSlide?.image
           </div>
         </section>
       )}
+
+      
+      {/* ─── PROMO CAROUSEL ───────────────────────────────────── */}
+      <PromoCarousel />
+
+
         {/* ─── TRUST BADGES ─────────────────────────────────────── */}
       <section style={{ background: "#FAF5F2" }}>
         <div className="mx-auto max-w-7xl px-2 py-2">

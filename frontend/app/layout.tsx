@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { StoreProvider } from "@/app/providers/StoreProvider";
 import { BRAND_NAME } from "@/app/lib/brand";
 import { AppShell } from "@/app/components/AppShell";
